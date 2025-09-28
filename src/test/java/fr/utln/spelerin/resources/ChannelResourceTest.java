@@ -11,40 +11,49 @@ import static org.hamcrest.Matchers.*;
 
 @QuarkusTest
 @QuarkusTestResource(PostgresTestResource.class)
-class UserResourceTest {
+class ChannelResourceTest {
 
 	@Test
-	void createReadDeleteUser() {
-		// CREATE USER with nested guild id
-		String userId =
+	void createReadDeleteChannel() {
+		// create guild first
+		String guildId =
 		given()
 			.contentType(ContentType.JSON)
-			.body("{\"username\":\"MyUser\",\"displayName\":\"My Display Name\"}")
-		.when().post("/users")
+			.body("{\"name\":\"GuildForChannel\"}")
+		.when().post("/guilds")
 		.then()
 			.statusCode(201)
-			.body("username", is("MyUser"))
-			.body("displayName", is("My Display Name"))
+			.extract().path("id");
+
+		// CREATE CHANNEL with nested guild id
+		String channelId =
+		given()
+			.contentType(ContentType.JSON)
+			.body("{\"name\":\"MyChannel\",\"type\":\"text\",\"guild\":{\"id\":\"" + guildId + "\"}}")
+		.when().post("/channels")
+		.then()
+			.statusCode(201)
+			.body("name", is("MyChannel"))
 			.body("id", notNullValue())
 		.extract().path("id");
 
 		// READ BY ID
 		given()
-		.when().get("/users/" + userId)
+		.when().get("/channels/" + channelId)
 		.then()
 			.statusCode(200)
-			.body("username", is("MyUser"))
-			.body("displayName", is("My Display Name"));
+			.body("name", is("MyChannel"))
+			.body("guild.id", is(guildId));
 
 		// DELETE
 		given()
-		.when().delete("/users/" + userId)
+		.when().delete("/channels/" + channelId)
 		.then()
 			.statusCode(204);
 
 		// VERIFY NOT FOUND
 		given()
-		.when().get("/users/" + userId)
+		.when().get("/channels/" + channelId)
 		.then()
 			.statusCode(404);
 	}

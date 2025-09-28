@@ -1,6 +1,7 @@
 package fr.utln.spelerin.resources;
 
 import fr.utln.spelerin.entities.Guild;
+import jakarta.transaction.Transactional;
 import fr.utln.spelerin.repositories.GuildRepository;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -22,19 +23,36 @@ public class GuildResource {
 
 	@GET
 	public List<Guild> getAllGuilds() {
-		return guildRepository.listAll();
+		// Eagerly fetch all relations to avoid lazy loading issues
+		return guildRepository.listAll().stream()
+			.map(guild -> {
+				// Force initialization of collections by accessing them
+				guild.getUserIds(); // This calls size() internally
+				guild.getRoleIds(); // This calls size() internally
+				guild.getChannelIds(); // This calls size() internally
+				return guild;
+			})
+			.toList();
 	}
 
 	@GET
 	@Path("/{id}")
+	@Transactional
 	public Response getGuildById(@PathParam("id") UUID id) {
 		return guildRepository.findByIdOptional(id)
-				.map(Response::ok)
+				.map(guild -> {
+					// Force initialization of collections
+					guild.getUserIds();
+					guild.getRoleIds();
+					guild.getChannelIds();
+					return Response.ok(guild);
+				})
 				.orElse(Response.status(Response.Status.NOT_FOUND))
 				.build();
 	}
 
 	@POST
+	@Transactional
 	public Response createGuild(Guild guild) {
 		guildRepository.persist(guild);
 		return Response.status(Response.Status.CREATED).entity(guild).build();
@@ -42,6 +60,7 @@ public class GuildResource {
 
 	@DELETE
 	@Path("/{id}")
+	@Transactional
 	public Response deleteGuild(@PathParam("id") UUID id) {
 		boolean deleted = guildRepository.deleteById(id);
 		if (deleted) {

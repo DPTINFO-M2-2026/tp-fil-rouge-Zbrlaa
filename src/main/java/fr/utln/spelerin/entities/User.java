@@ -3,11 +3,16 @@ package fr.utln.spelerin.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -17,28 +22,37 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User{
-
+@ToString(onlyExplicitlyIncluded = true)
+@JsonIdentityInfo(
+  generator = ObjectIdGenerators.PropertyGenerator.class,
+  property = "id"
+)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class User {
 	@Id
 	@GeneratedValue
 	@UuidGenerator
+	@ToString.Include
 	private UUID id;
 
 	@Column(nullable = false)
+	@ToString.Include
 	private String username;
 
 	@Column(nullable = false)
+	@ToString.Include
 	private String displayName;
 
 	@Column(name = "joined_at", nullable = false)
+	@ToString.Include
 	private Instant joinedAt;
 
 	@Builder.Default
-	@ManyToMany(mappedBy = "users")
+	@ManyToMany(mappedBy = "users", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Set<Guild> guilds = new HashSet<>();
 
 	@Builder.Default
-	@ManyToMany
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(
 		name = "user_roles",
 		joinColumns = @JoinColumn(name = "user_id"),
@@ -46,10 +60,57 @@ public class User{
 	)
 	private Set<Role> roles = new HashSet<>();
 
+
 	@PrePersist
 	public void prePersist(){
 		if (joinedAt == null) {
 			joinedAt = Instant.now();
 		}
+	}
+
+
+	public void addGuild(Guild guild) {
+		if (guild == null) return;
+		if (this.guilds.add(guild)) {
+			guild.getUsers().add(this);
+		}
+	}
+
+	public void removeGuild(Guild guild) {
+		if (guild == null) return;
+		if (this.guilds.remove(guild)) {
+			guild.getUsers().remove(this);
+		}
+	}
+
+	public void addRole(Role role) {
+		if (role == null) return;
+		if (this.roles.add(role)) {
+			role.getUsers().add(this);
+		}
+	}
+
+	public void removeRole(Role role) {
+		if (role == null) return;
+		if (this.roles.remove(role)) {
+			role.getUsers().remove(this);
+		}
+	}
+
+
+	@ToString.Include(name = "guildIds")
+	public Set<UUID> getGuildIds() {
+		return guilds.stream()
+				.map(Guild::getId)
+				.filter(Objects::nonNull)
+				.collect(Collectors.toUnmodifiableSet());
+	}
+
+	@ToString.Include(name = "roleIds")
+	public Set<UUID> getRoleIds() {
+		return roles.stream()
+				.map(Role::getId)
+				.filter(Objects::nonNull)
+				.collect(Collectors.toUnmodifiableSet());
 	}
 }

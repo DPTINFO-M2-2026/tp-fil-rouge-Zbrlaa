@@ -39,8 +39,7 @@ public class App{
 				.build();
 
 		// Relation bidirectionnelle
-		shawn.getGuilds().add(skateClub);
-		skateClub.getUsers().add(shawn);
+		shawn.addGuild(skateClub);
 
 		try {
 			userRepository.persist(shawn);
@@ -51,7 +50,7 @@ public class App{
 
 		User u = userRepository.findById(shawn.getId());
 		if (u != null) {
-			logger.info("Utilisateur {} retrouvé dans la base !", u.getUsername());
+			logger.info("Utilisateur {} retrouvé dans la base !", u.getGuilds());
 		} else {
 			logger.warn("Utilisateur non trouvé dans la base !");
 		}

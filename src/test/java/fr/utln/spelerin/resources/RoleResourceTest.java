@@ -11,40 +11,50 @@ import static org.hamcrest.Matchers.*;
 
 @QuarkusTest
 @QuarkusTestResource(PostgresTestResource.class)
-class UserResourceTest {
+class RoleResourceTest {
 
 	@Test
-	void createReadDeleteUser() {
-		// CREATE USER with nested guild id
-		String userId =
+	void createReadDeleteRole() {
+		// create guild first
+		String guildId =
 		given()
 			.contentType(ContentType.JSON)
-			.body("{\"username\":\"MyUser\",\"displayName\":\"My Display Name\"}")
-		.when().post("/users")
+			.body("{\"name\":\"GuildForRole\"}")
+		.when().post("/guilds")
 		.then()
 			.statusCode(201)
-			.body("username", is("MyUser"))
-			.body("displayName", is("My Display Name"))
+			.extract().path("id");
+
+		// CREATE ROLE with nested guild id
+		String roleId =
+		given()
+			.contentType(ContentType.JSON)
+			.body("{\"name\":\"MyRole\",\"permissions\":7,\"guild\":{\"id\":\"" + guildId + "\"}}")
+		.when().post("/roles")
+		.then()
+			.statusCode(201)
+			.body("name", is("MyRole"))
+			.body("permissions", is(7))
 			.body("id", notNullValue())
 		.extract().path("id");
 
 		// READ BY ID
 		given()
-		.when().get("/users/" + userId)
+		.when().get("/roles/" + roleId)
 		.then()
 			.statusCode(200)
-			.body("username", is("MyUser"))
-			.body("displayName", is("My Display Name"));
+			.body("name", is("MyRole"))
+			.body("guild.id", is(guildId));
 
 		// DELETE
 		given()
-		.when().delete("/users/" + userId)
+		.when().delete("/roles/" + roleId)
 		.then()
 			.statusCode(204);
 
 		// VERIFY NOT FOUND
 		given()
-		.when().get("/users/" + userId)
+		.when().get("/roles/" + roleId)
 		.then()
 			.statusCode(404);
 	}

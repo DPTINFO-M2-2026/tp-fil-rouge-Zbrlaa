@@ -11,40 +11,39 @@ import static org.hamcrest.Matchers.*;
 
 @QuarkusTest
 @QuarkusTestResource(PostgresTestResource.class)
-class UserResourceTest {
+class GuildResourceTest {
 
 	@Test
-	void createReadDeleteUser() {
-		// CREATE USER with nested guild id
-		String userId =
+	void createReadDeleteGuild() {
+		// CREATE
+		String guildId =
 		given()
 			.contentType(ContentType.JSON)
-			.body("{\"username\":\"MyUser\",\"displayName\":\"My Display Name\"}")
-		.when().post("/users")
+			.body("{\"name\":\"TestGuild\"}")
+		.when().post("/guilds")
 		.then()
 			.statusCode(201)
-			.body("username", is("MyUser"))
-			.body("displayName", is("My Display Name"))
+			.body("name", is("TestGuild"))
 			.body("id", notNullValue())
 		.extract().path("id");
 
 		// READ BY ID
 		given()
-		.when().get("/users/" + userId)
+		.when().get("/guilds/" + guildId)
 		.then()
 			.statusCode(200)
-			.body("username", is("MyUser"))
-			.body("displayName", is("My Display Name"));
+			.body("name", is("TestGuild"))
+			.body("id", is(guildId));
 
 		// DELETE
 		given()
-		.when().delete("/users/" + userId)
+		.when().delete("/guilds/" + guildId)
 		.then()
 			.statusCode(204);
 
 		// VERIFY NOT FOUND
 		given()
-		.when().get("/users/" + userId)
+		.when().get("/guilds/" + guildId)
 		.then()
 			.statusCode(404);
 	}
