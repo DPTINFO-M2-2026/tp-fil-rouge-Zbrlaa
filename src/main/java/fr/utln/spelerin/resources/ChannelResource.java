@@ -49,10 +49,6 @@ public class ChannelResource {
 
 		return guildRepository.findByIdOptional(channel.getGuild().getId())
 			.map(guild -> {
-				// Force initialization of collections to avoid LazyInitializationException
-				guild.getUserIds(); 
-				guild.getRoleIds();
-				guild.getChannelIds();
 				channel.setGuild(guild);
 				channelRepository.persist(channel);
 				return Response.status(Response.Status.CREATED).entity(channel).build();

@@ -23,16 +23,7 @@ public class GuildResource {
 
 	@GET
 	public List<Guild> getAllGuilds() {
-		// Eagerly fetch all relations to avoid lazy loading issues
-		return guildRepository.listAll().stream()
-			.map(guild -> {
-				// Force initialization of collections by accessing them
-				guild.getUserIds(); // This calls size() internally
-				guild.getRoleIds(); // This calls size() internally
-				guild.getChannelIds(); // This calls size() internally
-				return guild;
-			})
-			.toList();
+		return guildRepository.listAll();
 	}
 
 	@GET
@@ -40,13 +31,7 @@ public class GuildResource {
 	@Transactional
 	public Response getGuildById(@PathParam("id") UUID id) {
 		return guildRepository.findByIdOptional(id)
-				.map(guild -> {
-					// Force initialization of collections
-					guild.getUserIds();
-					guild.getRoleIds();
-					guild.getChannelIds();
-					return Response.ok(guild);
-				})
+				.map(Response::ok)
 				.orElse(Response.status(Response.Status.NOT_FOUND))
 				.build();
 	}

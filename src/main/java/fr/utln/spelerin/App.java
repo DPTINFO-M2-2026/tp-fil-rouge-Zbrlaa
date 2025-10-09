@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.utln.spelerin.entities.Guild;
+import fr.utln.spelerin.entities.Role;
 import fr.utln.spelerin.entities.User;
 import fr.utln.spelerin.repositories.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -38,8 +39,15 @@ public class App{
 				.name("Skate Club")
 				.build();
 
+		Role adminRole = Role.builder()
+				.name("Admin")
+				.permissions(0xFFFFFFFFL)
+				.build();
+
 		// Relation bidirectionnelle
 		shawn.addGuild(skateClub);
+		adminRole.setGuild(skateClub);
+		shawn.addRole(adminRole);
 
 		try {
 			userRepository.persist(shawn);
@@ -50,7 +58,7 @@ public class App{
 
 		User u = userRepository.findById(shawn.getId());
 		if (u != null) {
-			logger.info("Utilisateur {} retrouvé dans la base !", u.getGuilds());
+			logger.info("Utilisateur {} retrouvé dans la base !", u);
 		} else {
 			logger.warn("Utilisateur non trouvé dans la base !");
 		}

@@ -3,8 +3,6 @@ package fr.utln.spelerin.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.Instant;
@@ -23,11 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 @ToString(onlyExplicitlyIncluded = true)
-@JsonIdentityInfo(
-  generator = ObjectIdGenerators.PropertyGenerator.class,
-  property = "id"
-)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties(value = {"guilds", "roles"}, ignoreUnknown = true)
 public class User {
 	@Id
 	@GeneratedValue
@@ -47,10 +41,12 @@ public class User {
 	@ToString.Include
 	private Instant joinedAt;
 
+	// @JsonIgnoreProperties({"users", "roles", "channels"})
 	@Builder.Default
 	@ManyToMany(mappedBy = "users", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Set<Guild> guilds = new HashSet<>();
 
+	// @JsonIgnoreProperties({"guild", "users", "accessibleChannels"})
 	@Builder.Default
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(

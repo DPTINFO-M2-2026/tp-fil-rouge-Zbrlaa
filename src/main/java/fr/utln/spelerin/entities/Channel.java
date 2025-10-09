@@ -2,10 +2,8 @@ package fr.utln.spelerin.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.ToString;
+
 import org.hibernate.annotations.UuidGenerator;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.HashSet;
@@ -23,11 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 @ToString(onlyExplicitlyIncluded = true)
-@JsonIdentityInfo(
-  generator = ObjectIdGenerators.PropertyGenerator.class,
-  property = "id"
-)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties(value = {"guild", "rolesWithAccess"}, ignoreUnknown = true)
 public class Channel {
 	@Id
 	@GeneratedValue
@@ -43,10 +37,12 @@ public class Channel {
 	@ToString.Include
 	private String type;
 
+	// @JsonIgnoreProperties({"users", "roles", "channels"})
 	@ManyToOne
 	@JoinColumn(name = "guild_id", nullable = false)
 	private Guild guild;
 
+	// @JsonIgnoreProperties({"guild", "users", "accessibleChannels"})
 	@Builder.Default
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(

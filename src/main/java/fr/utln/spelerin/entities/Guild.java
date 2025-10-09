@@ -3,8 +3,6 @@ package fr.utln.spelerin.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.Instant;
@@ -23,11 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 @ToString(onlyExplicitlyIncluded = true)
-@JsonIdentityInfo(
-  generator = ObjectIdGenerators.PropertyGenerator.class,
-  property = "id"
-)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties(value = {"users", "roles", "channels"}, ignoreUnknown = true)
 public class Guild {
 	@Id
 	@GeneratedValue
@@ -43,6 +37,7 @@ public class Guild {
 	@ToString.Include
 	private Instant createdAt;
 
+	// @JsonIgnoreProperties({"guilds", "roles"})
 	@Builder.Default
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(
@@ -52,10 +47,12 @@ public class Guild {
 	)
 	private Set<User> users = new HashSet<>();
 
+	// @JsonIgnoreProperties({"guild", "users", "accessibleChannels"})
 	@Builder.Default
 	@OneToMany(mappedBy = "guild", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Role> roles = new HashSet<>();
 
+	// @JsonIgnoreProperties({"guild", "rolesWithAccess"})
 	@Builder.Default
 	@OneToMany(mappedBy = "guild", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Channel> channels = new HashSet<>();

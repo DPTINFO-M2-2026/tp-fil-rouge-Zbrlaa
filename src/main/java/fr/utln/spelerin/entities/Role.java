@@ -2,10 +2,8 @@ package fr.utln.spelerin.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.ToString;
+
 import org.hibernate.annotations.UuidGenerator;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.HashSet;
@@ -23,11 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 @ToString(onlyExplicitlyIncluded = true)
-@JsonIdentityInfo(
-  generator = ObjectIdGenerators.PropertyGenerator.class,
-  property = "id"
-)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties(value = {"guild", "users", "accessibleChannels"}, ignoreUnknown = true)
 public class Role {
 	@Id
 	@GeneratedValue
@@ -43,14 +37,17 @@ public class Role {
 	@ToString.Include
 	private Long permissions;
 
+	// @JsonIgnoreProperties({"users", "roles", "channels"})
 	@ManyToOne
 	@JoinColumn(name = "guild_id", nullable = false)
 	private Guild guild;
 
+	// @JsonIgnoreProperties({"guilds", "roles"})
 	@Builder.Default
 	@ManyToMany(mappedBy = "roles")
 	private Set<User> users = new HashSet<>();
 
+	// @JsonIgnoreProperties({"guild", "rolesWithAccess"})
 	@Builder.Default
 	@ManyToMany(mappedBy = "rolesWithAccess")
 	private Set<Channel> accessibleChannels = new HashSet<>();

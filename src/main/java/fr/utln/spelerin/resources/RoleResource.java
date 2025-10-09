@@ -49,10 +49,6 @@ public class RoleResource {
 
 		return guildRepository.findByIdOptional(role.getGuild().getId())
 			.map(guild -> {
-				// Force initialization of collections to avoid LazyInitializationException
-				guild.getUserIds();
-				guild.getRoleIds();
-				guild.getChannelIds();
 				role.setGuild(guild);
 				roleRepository.persist(role);
 				return Response.status(Response.Status.CREATED).entity(role).build();
