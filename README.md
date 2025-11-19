@@ -1,4 +1,4 @@
-# Bot Discord
+# FatigoonAPI
 https://bruno.univ-tln.fr/notebooks-develop/notebook-java-revisions/I311_Revisions.html
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
