@@ -1,16 +1,22 @@
 package fr.utln.spelerin.resources;
 
+import fr.utln.spelerin.dto.createupdatedto.ChannelCreateUpdateDTO;
 import fr.utln.spelerin.entities.Channel;
-import jakarta.transaction.Transactional;
+import fr.utln.spelerin.entities.Guild;
+import fr.utln.spelerin.entities.Role;
+import fr.utln.spelerin.mappers.ChannelMapper;
 import fr.utln.spelerin.repositories.ChannelRepository;
+import fr.utln.spelerin.repositories.GuildRepository;
+import fr.utln.spelerin.repositories.RoleRepository;
+
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.List;
+
 import java.util.UUID;
 
-import fr.utln.spelerin.repositories.GuildRepository;
 
 @Path("/channels")
 @Produces(MediaType.APPLICATION_JSON)
@@ -18,54 +24,112 @@ import fr.utln.spelerin.repositories.GuildRepository;
 public class ChannelResource {
 	private final ChannelRepository channelRepository;
 	private final GuildRepository guildRepository;
+	private final RoleRepository roleRepository;
 
 	@Inject
-	public ChannelResource(ChannelRepository channelRepository, GuildRepository guildRepository){
+	public ChannelResource(ChannelRepository channelRepository, GuildRepository guildRepository, RoleRepository roleRepository) {
 		this.channelRepository = channelRepository;
 		this.guildRepository = guildRepository;
+		this.roleRepository = roleRepository;
+	}
+
+	// --- CRUD de base ---
+
+	@GET
+	public Response getAll() {
+		return Response.ok(
+				channelRepository.listAll()
+						.stream()
+						.map(ChannelMapper::toDTO)
+						.toList()
+		).build();
 	}
 
 	@GET
-	public List<Channel> getAllChannels() {
-		return channelRepository.listAll();
-	}
-
-	@GET
-	@Path("/{id}")
-	public Response getChannelById(@PathParam("id") UUID id) {
-		return channelRepository.findByIdOptional(id)
-				.map(Response::ok)
-				.orElse(Response.status(Response.Status.NOT_FOUND))
-				.build();
+	@Path("{id}")
+	public Response getById(@PathParam("id") UUID id) {
+		Channel channel = channelRepository.findById(id);
+		if (channel == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		return Response.ok(ChannelMapper.toDTO(channel)).build();
 	}
 
 	@POST
 	@Transactional
-	public Response createChannel(Channel channel) {
-		if (channel.getGuild() == null || channel.getGuild().getId() == null) {
+	public Response create(ChannelCreateUpdateDTO dto) {
+		Guild guild = guildRepository.findById(dto.guildId());
+		if (guild == null) {
 			return Response.status(Response.Status.BAD_REQUEST)
-				.entity("Guild ID is required").build();
+					.entity("Guild not found").build();
 		}
 
-		return guildRepository.findByIdOptional(channel.getGuild().getId())
-			.map(guild -> {
-				channel.setGuild(guild);
-				channelRepository.persist(channel);
-				return Response.status(Response.Status.CREATED).entity(channel).build();
-			})
-			.orElse(Response.status(Response.Status.NOT_FOUND)
-				.entity("Guild not found").build());
+		Channel channel = ChannelMapper.toEntity(dto, guild);
+		channelRepository.persist(channel);
+		return Response.status(Response.Status.CREATED)
+				.entity(ChannelMapper.toDTO(channel))
+				.build();
+	}
+
+	@PUT
+	@Path("{id}")
+	@Transactional
+	public Response update(@PathParam("id") UUID id, ChannelCreateUpdateDTO dto) {
+		Channel channel = channelRepository.findById(id);
+		if (channel == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+
+		Guild guild = guildRepository.findById(dto.guildId());
+		if (guild == null) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity("Guild not found").build();
+		}
+
+		ChannelMapper.updateEntity(channel, dto, guild);
+		channelRepository.persist(channel);
+		return Response.ok(ChannelMapper.toDTO(channel)).build();
 	}
 
 	@DELETE
-	@Path("/{id}")
+	@Path("{id}")
 	@Transactional
-	public Response deleteChannel(@PathParam("id") UUID id) {
-		boolean deleted = channelRepository.deleteById(id);
-		if (deleted) {
-			return Response.noContent().build();
-		} else {
+	public Response delete(@PathParam("id") UUID id) {
+		Channel channel = channelRepository.findById(id);
+		if (channel == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
+		channelRepository.delete(channel);
+		return Response.noContent().build();
+	}
+
+	// --- Relations Role ---
+
+	@PUT
+	@Path("{channelId}/roles/{roleId}")
+	@Transactional
+	public Response addRole(@PathParam("channelId") UUID channelId, @PathParam("roleId") UUID roleId) {
+		Channel channel = channelRepository.findById(channelId);
+		Role role = roleRepository.findById(roleId);
+		if (channel == null || role == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+
+		channel.addRoleWithAccess(role);
+		return Response.ok(ChannelMapper.toDTO(channel)).build();
+	}
+
+	@DELETE
+	@Path("{channelId}/roles/{roleId}")
+	@Transactional
+	public Response removeRole(@PathParam("channelId") UUID channelId, @PathParam("roleId") UUID roleId) {
+		Channel channel = channelRepository.findById(channelId);
+		Role role = roleRepository.findById(roleId);
+		if (channel == null || role == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+
+		channel.removeRoleWithAccess(role);
+		return Response.ok(ChannelMapper.toDTO(channel)).build();
 	}
 }

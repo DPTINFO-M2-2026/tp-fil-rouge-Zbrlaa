@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PostgresTestResource implements QuarkusTestResourceLifecycleManager {
-
 	private PostgreSQLContainer<?> postgres;
 
 	@SuppressWarnings("resource")
@@ -19,7 +18,6 @@ public class PostgresTestResource implements QuarkusTestResourceLifecycleManager
 				.withDatabaseName("test")
 				.withUsername("test")
 				.withPassword("test")
-				.withInitScript("import.sql") // utilisation du script d'initialisation
 		;
 		postgres.start();
 
@@ -29,9 +27,11 @@ public class PostgresTestResource implements QuarkusTestResourceLifecycleManager
 		props.put("quarkus.datasource.username", postgres.getUsername());
 		props.put("quarkus.datasource.password", postgres.getPassword());
 		props.put("quarkus.datasource.db-kind", "postgresql");
-		// Utiliser drop-and-create pour démarrer proprement dans le container éphémère
+
+        // Hibernate génère tout le schéma de test automatiquement
 		props.put("quarkus.hibernate-orm.database.generation", "drop-and-create");
-		// Optionnel: éviter le chargement de script import.sql de production pendant les tests
+
+        // Ignorer les scripts SQL automatiques
 		props.put("quarkus.hibernate-orm.sql-load-script", "no-file");
 		return props;
 	}

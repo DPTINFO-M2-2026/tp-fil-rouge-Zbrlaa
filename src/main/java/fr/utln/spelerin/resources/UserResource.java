@@ -1,91 +1,135 @@
 package fr.utln.spelerin.resources;
 
+import fr.utln.spelerin.dto.createupdatedto.UserCreateUpdateDTO;
+import fr.utln.spelerin.entities.Guild;
+import fr.utln.spelerin.entities.Role;
 import fr.utln.spelerin.entities.User;
-import jakarta.transaction.Transactional;
+import fr.utln.spelerin.mappers.UserMapper;
+import fr.utln.spelerin.repositories.GuildRepository;
+import fr.utln.spelerin.repositories.RoleRepository;
 import fr.utln.spelerin.repositories.UserRepository;
+
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.List;
+
 import java.util.UUID;
 
-
-import fr.utln.spelerin.repositories.GuildRepository;
-import fr.utln.spelerin.entities.Guild;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserResource {
-	private final UserRepository userRepository;
 	private final GuildRepository guildRepository;
+	private final RoleRepository roleRepository;
+	private final UserRepository userRepository;
 
 	@Inject
-	public UserResource(UserRepository userRepository, GuildRepository guildRepository) {
-		this.userRepository = userRepository;
+	public UserResource(GuildRepository guildRepository, RoleRepository roleRepository, UserRepository userRepository) {
 		this.guildRepository = guildRepository;
+		this.roleRepository = roleRepository;
+		this.userRepository = userRepository;
 	}
 
+	// --- CRUD de base ---
+
 	@GET
-	public List<User> getAllUsers() {
-		return userRepository.listAll();
+	public Response getAll() {
+		return Response.ok(
+				userRepository.listAll()
+						.stream()
+						.map(UserMapper::toDTO)
+						.toList()
+		).build();
 	}
 
 	@GET
 	@Path("/{id}")
-	public Response getUserById(@PathParam("id") UUID id) {
-		return userRepository.findByIdOptional(id)
-				.map(Response::ok)
-				.orElse(Response.status(Response.Status.NOT_FOUND))
-				.build();
+	public Response getById(@PathParam("id") UUID id) {
+		User user = userRepository.findById(id);
+		if (user == null) return Response.status(Response.Status.NOT_FOUND).build();
+		return Response.ok(UserMapper.toDTO(user)).build();
 	}
 
 	@POST
 	@Transactional
-	public Response createUser(User user) {
-		if (user.getGuilds() != null && !user.getGuilds().isEmpty()) {
-			// If guilds are specified, validate that they exist
-			for (Guild guild : user.getGuilds()) {
-				if (guild.getId() == null) {
-					return Response.status(Response.Status.BAD_REQUEST)
-						.entity("Guild ID is required").build();
-				}
-				guild = guildRepository.findById(guild.getId());
-				if (guild == null) {
-					return Response.status(Response.Status.NOT_FOUND)
-						.entity("Guild not found").build();
-				}
-			}
-		}
-
+	public Response create(UserCreateUpdateDTO dto) {
+		User user = UserMapper.toEntity(dto);
 		userRepository.persist(user);
-		return Response.status(Response.Status.CREATED).entity(user).build();
+		return Response.status(Response.Status.CREATED).entity(UserMapper.toDTO(user)).build();
 	}
 
 	@PUT
 	@Path("/{id}")
 	@Transactional
-	public Response updateUser(@PathParam("id") UUID id, User updatedUser) {
-		return userRepository.findByIdOptional(id)
-				.map(user -> {
-					user.setUsername(updatedUser.getUsername());
-					user.setDisplayName(updatedUser.getDisplayName());
-					userRepository.persist(user);
-					return Response.ok(user).build();
-				})
-				.orElse(Response.status(Response.Status.NOT_FOUND).build());
+	public Response update(@PathParam("id") UUID id, UserCreateUpdateDTO dto) {
+		User user = userRepository.findById(id);
+		if (user == null) return Response.status(Response.Status.NOT_FOUND).build();
+
+		UserMapper.updateEntity(user, dto);
+		return Response.ok(UserMapper.toDTO(user)).build();
 	}
 
 	@DELETE
 	@Path("/{id}")
 	@Transactional
-	public Response deleteUser(@PathParam("id") UUID id) {
+	public Response delete(@PathParam("id") UUID id) {
 		boolean deleted = userRepository.deleteById(id);
-		if (deleted) {
-			return Response.noContent().build();
-		} else {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		}
+		return deleted ? Response.noContent().build()
+					: Response.status(Response.Status.NOT_FOUND).build();
+	}
+
+	// --- Relations Guild ---
+
+	@PUT
+	@Path("/{userId}/guilds/{guildId}")
+	@Transactional
+	public Response addGuild(@PathParam("userId") UUID userId, @PathParam("guildId") UUID guildId) {
+		User user = userRepository.findById(userId);
+		Guild g = guildRepository.findById(guildId);
+		if (user == null || g == null) return Response.status(Response.Status.NOT_FOUND).build();
+
+		user.addGuild(g);
+		return Response.ok(UserMapper.toDTO(user)).build();
+	}
+
+	@DELETE
+	@Path("/{userId}/guilds/{guildId}")
+	@Transactional
+	public Response removeGuild(@PathParam("userId") UUID userId, @PathParam("guildId") UUID guildId) {
+		User user = userRepository.findById(userId);
+		Guild g = guildRepository.findById(guildId);
+		if (user == null || g == null) return Response.status(Response.Status.NOT_FOUND).build();
+
+		user.removeGuild(g);
+		return Response.ok(UserMapper.toDTO(user)).build();
+	}
+
+	// --- Relations Role ---
+
+	@PUT
+	@Path("/{userId}/roles/{roleId}")
+	@Transactional
+	public Response addRole(@PathParam("userId") UUID userId, @PathParam("roleId") UUID roleId) {
+		User user = userRepository.findById(userId);
+		Role r = roleRepository.findById(roleId);
+		if (user == null || r == null) return Response.status(Response.Status.NOT_FOUND).build();
+
+		user.addRole(r);
+		return Response.ok(UserMapper.toDTO(user)).build();
+	}
+
+	@DELETE
+	@Path("/{userId}/roles/{roleId}")
+	@Transactional
+	public Response removeRole(@PathParam("userId") UUID userId, @PathParam("roleId") UUID roleId) {
+		User user = userRepository.findById(userId);
+		Role r = roleRepository.findById(roleId);
+		if (user == null || r == null) return Response.status(Response.Status.NOT_FOUND).build();
+
+		user.removeRole(r);
+		return Response.ok(UserMapper.toDTO(user)).build();
 	}
 }
