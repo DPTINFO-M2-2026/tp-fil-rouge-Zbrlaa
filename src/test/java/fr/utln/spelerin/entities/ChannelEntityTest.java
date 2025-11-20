@@ -1,5 +1,6 @@
 package fr.utln.spelerin.entities;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -8,7 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ChannelEntityTest{
 	@Test
-	void addAndRemoveRoleWithAccess_shouldMaintainBidirectionalRelationsAndToStringIds(){
+	@DisplayName("Ajouter et retirer un rôle met à jour les relations et les IDs")
+	void addRemoveRole(){
 		Channel channel = Channel.builder().name("chan2").type("text").build();
 		UUID channelId = UUID.randomUUID();
 		channel.setId(channelId);
@@ -27,5 +29,6 @@ class ChannelEntityTest{
 		channel.removeRoleWithAccess(role);
 		assertFalse(channel.getRolesWithAccess().contains(role));
 		assertFalse(role.getAccessibleChannels().contains(channel));
+		assertFalse(channel.getRoleIds().contains(roleId));
 	}
 }

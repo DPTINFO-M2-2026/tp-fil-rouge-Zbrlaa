@@ -10,6 +10,6 @@ public record UserDTO(
 	String username,
 	String displayName,
 	Instant joinedAt,
-	Set<UUID> channelIds,
+	Set<UUID> guildIds,
 	Set<UUID> roleIds
 ){}
