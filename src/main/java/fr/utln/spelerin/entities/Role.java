@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import org.hibernate.annotations.UuidGenerator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+// import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 @Table(name = "roles")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @ToString(onlyExplicitlyIncluded = true)
-@JsonIgnoreProperties(value = {"guild", "users", "accessibleChannels"}, ignoreUnknown = true)
+// @JsonIgnoreProperties(value = {"guild", "users", "accessibleChannels"}, ignoreUnknown = true)
 public class Role {
 	@Id
 	@GeneratedValue
@@ -82,7 +82,6 @@ public class Role {
 	}
 
 
-	// toString helpers
 	@ToString.Include(name = "guildId")
 	public UUID getGuildId() {
 		return guild != null ? guild.getId() : null;

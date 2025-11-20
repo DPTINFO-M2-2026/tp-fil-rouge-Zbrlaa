@@ -3,7 +3,7 @@ package fr.utln.spelerin.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+// import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "guilds")
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter//Voir pour limiter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @ToString(onlyExplicitlyIncluded = true)
-@JsonIgnoreProperties(value = {"users", "roles", "channels"}, ignoreUnknown = true)
+// @JsonIgnoreProperties(value = {"users", "roles", "channels"}, ignoreUnknown = true)
 public class Guild {
 	@Id
 	@GeneratedValue
