@@ -79,6 +79,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-junit5-mockito</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
 			<scope>test</scope>
@@ -90,7 +96,6 @@
 			<version>1.7.30</version>
 		</dependency>
 
-		<!-- Testcontainers pour tests d'intégration PostgreSQL -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
@@ -104,13 +109,13 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Optionnel: JUnit 5 integration (si besoin) -->
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>1.19.0</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
@@ -142,6 +147,13 @@
 				<version>${compiler-plugin.version}</version>
 				<configuration>
 					<parameters>true</parameters>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>1.18.32</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 			<plugin>
