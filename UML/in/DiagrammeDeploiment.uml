@@ -1,0 +1,32 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+
+cloud "Google Cloud" {
+    [Gemini AI API] as Google
+}
+
+cloud "Discord Cloud" {
+    [Discord Servers] as Discord
+}
+
+node "Poste Utilisateur" {
+    [Navigateur Web\n(React/Angular)] as Browser
+}
+
+node "Infrastructure via Docker" {
+    component "FatigoonBot\n(Java/Discord4J)" as Bot
+    component "FatigoonAPI\n(Quarkus)" as API
+    database "PostgreSQL" as DB
+}
+
+' Flux de communication
+Discord =down=> Bot : WebSocket\n
+Bot =right=> API : HTTP\n(JSON)
+
+API -down-> DB : JDBC\n(SQL)
+API -up-> Google : HTTPS POST\n
+
+Browser -down-> API : HTTP GET/POST\n
+API .left.> Browser : SSE\n
+@enduml
