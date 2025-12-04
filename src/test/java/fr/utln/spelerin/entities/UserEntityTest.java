@@ -2,8 +2,6 @@ package fr.utln.spelerin.entities;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserEntityTest{
@@ -13,15 +11,15 @@ class UserEntityTest{
 				.username("testuser")
 				.displayName("Test User")
 				.build();
-		UUID userId = UUID.randomUUID();
+		String userId = String.valueOf(System.nanoTime());
 		user.setId(userId);
 
 		Guild guild = Guild.builder().name("G1").build();
-		UUID guildId = UUID.randomUUID();
+		String guildId = String.valueOf(System.nanoTime());
 		guild.setId(guildId);
 
 		Role role = Role.builder().name("R1").permissions(1L).build();
-		UUID roleId = UUID.randomUUID();
+		String roleId = String.valueOf(System.nanoTime());
 		role.setId(roleId);
 
 		// add guild via user helper

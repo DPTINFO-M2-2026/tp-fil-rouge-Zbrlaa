@@ -1,14 +1,13 @@
 package fr.utln.spelerin.dto;
 
 import java.util.Set;
-import java.util.UUID;
 
 
 public record RoleDTO(
-	UUID id,
+	String id,
 	String name,
 	Long permissions,
-	UUID guildId,
-	Set<UUID> userIds,
-	Set<UUID> accessibleChannelIds
+	String guildId,
+	Set<String> userIds,
+	Set<String> accessibleChannelIds
 ){}

@@ -2,14 +2,13 @@ package fr.utln.spelerin.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
+// Snowflake IDs are provided as Strings (no UUID generator)
 // import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -24,10 +23,8 @@ import java.util.stream.Collectors;
 // @JsonIgnoreProperties(value = {"users", "roles", "channels"}, ignoreUnknown = true)
 public class Guild {
 	@Id
-	@GeneratedValue
-	@UuidGenerator
 	@ToString.Include
-	private UUID id;
+	private String id;
 
 	@Column(nullable = false)
 	@ToString.Include
@@ -109,7 +106,7 @@ public class Guild {
 
 
 	@ToString.Include(name = "userIds")
-	public Set<UUID> getUserIds() {
+	public Set<String> getUserIds() {
 		return users.stream()
 				.map(User::getId)
 				.filter(Objects::nonNull)
@@ -117,7 +114,7 @@ public class Guild {
 	}
 
 	@ToString.Include(name = "roleIds")
-	public Set<UUID> getRoleIds() {
+	public Set<String> getRoleIds() {
 		return roles.stream()
 				.map(Role::getId)
 				.filter(Objects::nonNull)
@@ -125,7 +122,7 @@ public class Guild {
 	}
 
 	@ToString.Include(name = "channelIds")
-	public Set<UUID> getChannelIds() {
+	public Set<String> getChannelIds() {
 		return channels.stream()
 				.map(Channel::getId)
 				.filter(Objects::nonNull)

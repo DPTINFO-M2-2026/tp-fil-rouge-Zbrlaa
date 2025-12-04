@@ -1,7 +1,8 @@
 package fr.utln.spelerin.services;
 
 import fr.utln.spelerin.dto.RoleDTO;
-import fr.utln.spelerin.dto.createupdatedto.RoleCreateUpdateDTO;
+import fr.utln.spelerin.dto.createdto.RoleCreateDTO;
+import fr.utln.spelerin.dto.updatedto.RoleUpdateDTO;
 import fr.utln.spelerin.entities.Channel;
 import fr.utln.spelerin.entities.Guild;
 import fr.utln.spelerin.entities.Role;
@@ -18,7 +19,6 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
 
 @ApplicationScoped
 @Transactional
@@ -41,11 +41,11 @@ public class RoleService {
 		return roleRepository.listAll().stream().map(RoleMapper::toDTO).toList();
 	}
 
-	public Optional<RoleDTO> getRoleById(UUID id) {
+	public Optional<RoleDTO> getRoleById(String id) {
 		return roleRepository.findByIdOptional(id).map(RoleMapper::toDTO);
 	}
 
-	public RoleDTO createRole(RoleCreateUpdateDTO dto) {
+	public RoleDTO createRole(RoleCreateDTO dto) {
 		Guild guild = guildRepository.findById(dto.guildId());
 		if (guild == null) {
 			throw new NoSuchElementException("Guild not found: " + dto.guildId());
@@ -55,7 +55,7 @@ public class RoleService {
 		return RoleMapper.toDTO(role);
 	}
 
-	public RoleDTO updateRole(UUID id, RoleCreateUpdateDTO dto) {
+	public RoleDTO updateRole(String id, RoleUpdateDTO dto) {
 		Role role = roleRepository.findById(id);
 		if (role == null) throw new NoSuchElementException("Role not found: " + id);
 
@@ -66,11 +66,11 @@ public class RoleService {
 		return RoleMapper.toDTO(role);
 	}
 
-	public boolean deleteRole(UUID id) {
+	public boolean deleteRole(String id) {
 		return roleRepository.deleteById(id);
 	}
 
-	public RoleDTO addUserToRole(UUID roleId, UUID userId) {
+	public RoleDTO addUserToRole(String roleId, String userId) {
 		Role role = roleRepository.findById(roleId);
 		User user = userRepository.findById(userId);
 
@@ -81,7 +81,7 @@ public class RoleService {
 		return RoleMapper.toDTO(role);
 	}
 
-	public RoleDTO removeUserFromRole(UUID roleId, UUID userId) {
+	public RoleDTO removeUserFromRole(String roleId, String userId) {
 		Role role = roleRepository.findById(roleId);
 		User user = userRepository.findById(userId);
 
@@ -92,7 +92,7 @@ public class RoleService {
 		return RoleMapper.toDTO(role);
 	}
 
-	public RoleDTO addChannelToRole(UUID roleId, UUID channelId) {
+	public RoleDTO addChannelToRole(String roleId, String channelId) {
 		Role role = roleRepository.findById(roleId);
 		Channel channel = channelRepository.findById(channelId);
 
@@ -103,7 +103,7 @@ public class RoleService {
 		return RoleMapper.toDTO(role);
 	}
 
-	public RoleDTO removeChannelFromRole(UUID roleId, UUID channelId) {
+	public RoleDTO removeChannelFromRole(String roleId, String channelId) {
 		Role role = roleRepository.findById(roleId);
 		Channel channel = channelRepository.findById(channelId);
 

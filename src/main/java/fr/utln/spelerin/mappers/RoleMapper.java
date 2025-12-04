@@ -1,7 +1,8 @@
 package fr.utln.spelerin.mappers;
 
 import fr.utln.spelerin.dto.RoleDTO;
-import fr.utln.spelerin.dto.createupdatedto.RoleCreateUpdateDTO;
+import fr.utln.spelerin.dto.createdto.RoleCreateDTO;
+import fr.utln.spelerin.dto.updatedto.RoleUpdateDTO;
 import fr.utln.spelerin.entities.Guild;
 import fr.utln.spelerin.entities.Role;
 
@@ -20,7 +21,7 @@ public class RoleMapper {
 	}
 
 	// DTO -> Entity
-	public static Role toEntity(RoleCreateUpdateDTO dto, Guild guild) {
+	public static Role toEntity(RoleCreateDTO dto, Guild guild) {
 		return Role.builder()
 				.name(dto.name())
 				.permissions(dto.permissions())
@@ -28,7 +29,7 @@ public class RoleMapper {
 				.build();
 	}
 
-	public static void updateEntity(Role role, RoleCreateUpdateDTO dto, Guild guild) {
+	public static void updateEntity(Role role, RoleUpdateDTO dto, Guild guild) {
 		role.setName(dto.name());
 		role.setPermissions(dto.permissions());
 		role.setGuild(guild);

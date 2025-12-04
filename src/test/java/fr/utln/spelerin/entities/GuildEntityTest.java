@@ -2,27 +2,25 @@ package fr.utln.spelerin.entities;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class GuildEntityTest{
 	@Test
 	void addAndRemoveUserRoleChannel_shouldMaintainBidirectionalRelationsAndToStringIds() {
 		Guild guild = Guild.builder().name("MyGuild").build();
-		UUID guildId = UUID.randomUUID();
+		String guildId = String.valueOf(System.nanoTime());
 		guild.setId(guildId);
 
 		User user = User.builder().username("u").displayName("U").build();
-		UUID userId = UUID.randomUUID();
+		String userId = String.valueOf(System.nanoTime());
 		user.setId(userId);
 
 		Role role = Role.builder().name("r").permissions(2L).build();
-		UUID roleId = UUID.randomUUID();
+		String roleId = String.valueOf(System.nanoTime());
 		role.setId(roleId);
 
 		Channel channel = Channel.builder().name("c").type("text").build();
-		UUID channelId = UUID.randomUUID();
+		String channelId = String.valueOf(System.nanoTime());
 		channel.setId(channelId);
 
 		// add user

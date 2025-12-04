@@ -1,7 +1,8 @@
 package fr.utln.spelerin.mappers;
 
 import fr.utln.spelerin.dto.GuildDTO;
-import fr.utln.spelerin.dto.createupdatedto.GuildCreateUpdateDTO;
+import fr.utln.spelerin.dto.createdto.GuildCreateDTO;
+import fr.utln.spelerin.dto.updatedto.GuildUpdateDTO;
 import fr.utln.spelerin.entities.Guild;
 
 
@@ -19,13 +20,13 @@ public class GuildMapper {
 	}
 
 	// DTO -> Entity
-	public static Guild toEntity(GuildCreateUpdateDTO dto) {
+	public static Guild toEntity(GuildCreateDTO dto) {
 		return Guild.builder()
 				.name(dto.name())
 				.build();
 	}
 
-	public static void updateEntity(Guild guild, GuildCreateUpdateDTO dto) {
+	public static void updateEntity(Guild guild, GuildUpdateDTO dto) {
 		guild.setName(dto.name());
 	}
 }

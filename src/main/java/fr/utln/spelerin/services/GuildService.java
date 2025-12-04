@@ -1,7 +1,8 @@
 package fr.utln.spelerin.services;
 
 import fr.utln.spelerin.dto.GuildDTO;
-import fr.utln.spelerin.dto.createupdatedto.GuildCreateUpdateDTO;
+import fr.utln.spelerin.dto.createdto.GuildCreateDTO;
+import fr.utln.spelerin.dto.updatedto.GuildUpdateDTO;
 import fr.utln.spelerin.entities.Channel;
 import fr.utln.spelerin.entities.Guild;
 import fr.utln.spelerin.entities.Role;
@@ -18,7 +19,6 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
 
 @ApplicationScoped
 @Transactional
@@ -41,28 +41,28 @@ public class GuildService {
 		return guildRepository.listAll().stream().map(GuildMapper::toDTO).toList();
 	}
 
-	public Optional<GuildDTO> getGuildById(UUID id) {
+	public Optional<GuildDTO> getGuildById(String id) {
 		return guildRepository.findByIdOptional(id).map(GuildMapper::toDTO);
 	}
 
-	public GuildDTO createGuild(GuildCreateUpdateDTO dto) {
+	public GuildDTO createGuild(GuildCreateDTO dto) {
 		Guild guild = GuildMapper.toEntity(dto);
 		guildRepository.persist(guild);
 		return GuildMapper.toDTO(guild);
 	}
 
-	public GuildDTO updateGuild(UUID id, GuildCreateUpdateDTO dto) {
+	public GuildDTO updateGuild(String id, GuildUpdateDTO dto) {
 		Guild guild = guildRepository.findById(id);
 		if (guild == null) throw new NoSuchElementException("Guild not found: " + id);
 		GuildMapper.updateEntity(guild, dto);
 		return GuildMapper.toDTO(guild);
 	}
 
-	public boolean deleteGuild(UUID id) {
+	public boolean deleteGuild(String id) {
 		return guildRepository.deleteById(id);
 	}
 
-	public GuildDTO addUserToGuild(UUID guildId, UUID userId) {
+	public GuildDTO addUserToGuild(String guildId, String userId) {
 		Guild guild = guildRepository.findById(guildId);
 		User user = userRepository.findById(userId);
 
@@ -73,7 +73,7 @@ public class GuildService {
 		return GuildMapper.toDTO(guild);
 	}
 
-	public GuildDTO removeUserFromGuild(UUID guildId, UUID userId) {
+	public GuildDTO removeUserFromGuild(String guildId, String userId) {
 		Guild guild = guildRepository.findById(guildId);
 		User user = userRepository.findById(userId);
 
@@ -84,7 +84,7 @@ public class GuildService {
 		return GuildMapper.toDTO(guild);
 	}
 
-	public GuildDTO addRoleToGuild(UUID guildId, UUID roleId) {
+	public GuildDTO addRoleToGuild(String guildId, String roleId) {
 		Guild guild = guildRepository.findById(guildId);
 		Role role = roleRepository.findById(roleId);
 
@@ -95,7 +95,7 @@ public class GuildService {
 		return GuildMapper.toDTO(guild);
 	}
 
-	public GuildDTO removeRoleFromGuild(UUID guildId, UUID roleId) {
+	public GuildDTO removeRoleFromGuild(String guildId, String roleId) {
 		Guild guild = guildRepository.findById(guildId);
 		Role role = roleRepository.findById(roleId);
 
@@ -106,7 +106,7 @@ public class GuildService {
 		return GuildMapper.toDTO(guild);
 	}
 
-	public GuildDTO addChannelToGuild(UUID guildId, UUID channelId) {
+	public GuildDTO addChannelToGuild(String guildId, String channelId) {
 		Guild guild = guildRepository.findById(guildId);
 		Channel channel = channelRepository.findById(channelId);
 
@@ -117,7 +117,7 @@ public class GuildService {
 		return GuildMapper.toDTO(guild);
 	}
 
-	public GuildDTO removeChannelFromGuild(UUID guildId, UUID channelId) {
+	public GuildDTO removeChannelFromGuild(String guildId, String channelId) {
 		Guild guild = guildRepository.findById(guildId);
 		Channel channel = channelRepository.findById(channelId);
 

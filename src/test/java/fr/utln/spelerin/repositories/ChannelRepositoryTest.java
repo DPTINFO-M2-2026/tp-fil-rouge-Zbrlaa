@@ -15,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTestResource(PostgresTestResource.class)
 class ChannelRepositoryTest {
 
+	private static final String GUILD_SNOWFLAKE = "123456789012345678";
+	private static final String CHANNEL_SNOWFLAKE = "987654321098765432";
+
 	@Inject
 	ChannelRepository channelRepository;
 
@@ -24,28 +27,40 @@ class ChannelRepositoryTest {
 	@Test
 	@Transactional
 	void persistFindDeleteChannel() {
-		Guild g = Guild.builder().name("channel-guild").build();
+		// 1. CREATE GUILD (L'ID Snowflake doit être fourni manuellement)
+		Guild g = Guild.builder()
+				.id(GUILD_SNOWFLAKE) // <--- AJOUT CRITIQUE
+				.name("channel-guild")
+				.build();
+		
 		guildRepository.persist(g);
-		assertNotNull(g.getId());
+		assertEquals(GUILD_SNOWFLAKE, g.getId());
 
+		// 2. CREATE CHANNEL (L'ID Snowflake doit être fourni manuellement)
 		Channel c = Channel.builder()
+				.id(CHANNEL_SNOWFLAKE) // <--- AJOUT CRITIQUE
 				.name("tc_channel")
 				.type("text")
 				.guild(g)
 				.build();
 
 		channelRepository.persist(c);
-		assertNotNull(c.getId());
+		assertEquals(CHANNEL_SNOWFLAKE, c.getId());
 
+		// FIND
 		Channel found = channelRepository.findById(c.getId());
 		assertNotNull(found);
 		assertEquals("tc_channel", found.getName());
 		assertNotNull(found.getGuild());
 		assertEquals(g.getId(), found.getGuild().getId());
 
-		// delete
+		// DELETE
 		boolean deleted = channelRepository.deleteById(c.getId());
 		assertTrue(deleted);
 		assertNull(channelRepository.findById(c.getId()));
+		
+		// Nettoyer la guilde (bonne pratique dans les tests de repository)
+		guildRepository.deleteById(g.getId());
+		assertNull(guildRepository.findById(g.getId()));
 	}
 }

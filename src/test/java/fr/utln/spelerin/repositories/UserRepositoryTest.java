@@ -8,7 +8,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,20 +15,26 @@ import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTestResource(PostgresTestResource.class)
 class UserRepositoryTest {
 
+	private static final String USER_SNOWFLAKE = "500000000000000000";
+	private static final String USER_SNOWFLAKE_FIND = "600000000000000000";
+
 	@Inject
 	UserRepository userRepository;
 
 	@Test
 	@Transactional
 	void persistAndFindUser() {
+		// L'ID Snowflake doit être fourni manuellement
 		User u = User.builder()
+				.id(USER_SNOWFLAKE) // <--- AJOUT CRITIQUE
 				.username("tc_user")
 				.displayName("TestContainer User")
 				.build();
 
 		// persist
 		userRepository.persist(u);
-		assertNotNull(u.getId(), "Id must be generated after persist");
+		// L'ID ne doit plus être vérifié pour la génération, mais pour l'égalité avec le Snowflake fourni
+		assertEquals(USER_SNOWFLAKE, u.getId(), "ID must match the provided Snowflake.");
 
 		// find
 		User found = userRepository.findById(u.getId());
@@ -54,15 +59,21 @@ class UserRepositoryTest {
 	@Test
 	@Transactional
 	void findByUsernameShouldReturnCorrectUser() {
-		String username = "findme-" + UUID.randomUUID();
+		String username = "findme-" + System.nanoTime();
+		// L'ID Snowflake doit être fourni manuellement
 		User u = User.builder()
+				.id(USER_SNOWFLAKE_FIND) // <--- AJOUT CRITIQUE
 				.username(username)
 				.displayName("Find Me")
 				.build();
 		userRepository.persist(u);
+		assertEquals(USER_SNOWFLAKE_FIND, u.getId()); // Vérification du Snowflake
 
 		User byName = userRepository.findByUsername(username);
 		assertNotNull(byName);
 		assertEquals(username, byName.getUsername());
+
+		// Nettoyage après le test
+		userRepository.deleteById(u.getId());
 	}
 }

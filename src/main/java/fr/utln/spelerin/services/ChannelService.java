@@ -1,7 +1,8 @@
 package fr.utln.spelerin.services;
 
 import fr.utln.spelerin.dto.ChannelDTO;
-import fr.utln.spelerin.dto.createupdatedto.ChannelCreateUpdateDTO;
+import fr.utln.spelerin.dto.createdto.ChannelCreateDTO;
+import fr.utln.spelerin.dto.updatedto.ChannelUpdateDTO;
 import fr.utln.spelerin.entities.Channel;
 import fr.utln.spelerin.entities.Guild;
 import fr.utln.spelerin.entities.Role;
@@ -16,7 +17,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
+// UUID import removed: using String IDs (Snowflake)
 
 @ApplicationScoped
 @Transactional
@@ -40,12 +41,12 @@ public class ChannelService {
 				.toList();
 	}
 
-	public Optional<ChannelDTO> getChannelById(UUID id) {
+	public Optional<ChannelDTO> getChannelById(String id) {
 		return channelRepository.findByIdOptional(id)
 				.map(ChannelMapper::toDTO);
 	}
 
-	public ChannelDTO createChannel(ChannelCreateUpdateDTO dto) {
+	public ChannelDTO createChannel(ChannelCreateDTO dto) {
 		Guild guild = guildRepository.findById(dto.guildId());
 		if (guild == null) {
 			throw new IllegalArgumentException("Guild not found with ID: " + dto.guildId());
@@ -56,7 +57,7 @@ public class ChannelService {
 		return ChannelMapper.toDTO(channel);
 	}
 
-	public ChannelDTO updateChannel(UUID id, ChannelCreateUpdateDTO dto) {
+	public ChannelDTO updateChannel(String id, ChannelUpdateDTO dto) {
 		Channel channel = channelRepository.findById(id);
 		if (channel == null) {
 			throw new NoSuchElementException("Channel not found with ID: " + id);
@@ -73,11 +74,11 @@ public class ChannelService {
 		return ChannelMapper.toDTO(channel);
 	}
 
-	public boolean deleteChannel(UUID id) {
+	public boolean deleteChannel(String id) {
 		return channelRepository.deleteById(id);
 	}
 
-	public ChannelDTO addRoleToChannel(UUID channelId, UUID roleId) {
+	public ChannelDTO addRoleToChannel(String channelId, String roleId) {
 		Channel channel = channelRepository.findById(channelId);
 		Role role = roleRepository.findById(roleId);
 
@@ -92,7 +93,7 @@ public class ChannelService {
 		return ChannelMapper.toDTO(channel);
 	}
 
-	public ChannelDTO removeRoleFromChannel(UUID channelId, UUID roleId) {
+	public ChannelDTO removeRoleFromChannel(String channelId, String roleId) {
 		Channel channel = channelRepository.findById(channelId);
 		Role role = roleRepository.findById(roleId);
 

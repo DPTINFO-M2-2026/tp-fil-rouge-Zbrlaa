@@ -1,7 +1,8 @@
 package fr.utln.spelerin.mappers;
 
 import fr.utln.spelerin.dto.UserDTO;
-import fr.utln.spelerin.dto.createupdatedto.UserCreateUpdateDTO;
+import fr.utln.spelerin.dto.createdto.UserCreateDTO;
+import fr.utln.spelerin.dto.updatedto.UserUpdateDTO;
 import fr.utln.spelerin.entities.User;
 
 
@@ -19,14 +20,14 @@ public class UserMapper {
 	}
 
 	// DTO -> Entity
-	public static User toEntity(UserCreateUpdateDTO dto) {
+	public static User toEntity(UserCreateDTO dto) {
 		return User.builder()
 				.username(dto.username())
 				.displayName(dto.displayName())
 				.build();
 	}
 
-	public static void updateEntity(User user, UserCreateUpdateDTO dto) {
+	public static void updateEntity(User user, UserUpdateDTO dto) {
 		user.setUsername(dto.username());
 		user.setDisplayName(dto.displayName());
 	}

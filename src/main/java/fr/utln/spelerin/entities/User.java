@@ -2,14 +2,13 @@ package fr.utln.spelerin.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
+// Snowflake IDs are provided as Strings (no UUID generator)
 // import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -24,10 +23,8 @@ import java.util.stream.Collectors;
 // @JsonIgnoreProperties(value = {"guilds", "roles"}, ignoreUnknown = true)
 public class User {
 	@Id
-	@GeneratedValue
-	@UuidGenerator
 	@ToString.Include
-	private UUID id;
+	private String id;
 
 	@Column(nullable = false)
 	@ToString.Include
@@ -95,7 +92,7 @@ public class User {
 
 
 	@ToString.Include(name = "guildIds")
-	public Set<UUID> getGuildIds() {
+	public Set<String> getGuildIds() {
 		return guilds.stream()
 				.map(Guild::getId)
 				.filter(Objects::nonNull)
@@ -103,7 +100,7 @@ public class User {
 	}
 
 	@ToString.Include(name = "roleIds")
-	public Set<UUID> getRoleIds() {
+	public Set<String> getRoleIds() {
 		return roles.stream()
 				.map(Role::getId)
 				.filter(Objects::nonNull)

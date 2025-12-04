@@ -2,10 +2,10 @@ package fr.utln.spelerin.resources;
 
 import fr.utln.spelerin.dto.ChannelDTO;
 import fr.utln.spelerin.dto.RoleDTO;
+import fr.utln.spelerin.dto.createdto.ChannelCreateDTO;
+import fr.utln.spelerin.dto.createdto.GuildCreateDTO;
+import fr.utln.spelerin.dto.createdto.RoleCreateDTO;
 import fr.utln.spelerin.dto.GuildDTO;
-import fr.utln.spelerin.dto.createupdatedto.ChannelCreateUpdateDTO;
-import fr.utln.spelerin.dto.createupdatedto.RoleCreateUpdateDTO;
-import fr.utln.spelerin.dto.createupdatedto.GuildCreateUpdateDTO;
 import fr.utln.spelerin.tests.PostgresTestResource;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -18,11 +18,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTest
 @QuarkusTestResource(PostgresTestResource.class)
 class ChannelResourceTest {
+	
+	// Snowflakes de test fixes pour la reproductibilité
+	private static final String GUILD_SNOWFLAKE = "100000000000000001";
+	private static final String CHANNEL_SNOWFLAKE = "200000000000000002";
+	private static final String ROLE_SNOWFLAKE = "300000000000000003";
 
 	@Test
 	void crud_and_relations_channel() {
 		// ---------- CREATE GUILD ----------
-		GuildCreateUpdateDTO guildDto = new GuildCreateUpdateDTO("GuildTest");
+		// Le DTO prend maintenant l'ID Snowflake en argument
+		GuildCreateDTO guildDto = new GuildCreateDTO(GUILD_SNOWFLAKE, "GuildTest"); 
 		GuildDTO guild = given()
 				.contentType(ContentType.JSON)
 				.body(guildDto)
@@ -31,9 +37,18 @@ class ChannelResourceTest {
 			.then()
 				.statusCode(201)
 				.extract().as(GuildDTO.class);
+		
+		// Vérification de l'ID fourni
+		assertEquals(GUILD_SNOWFLAKE, guild.id());
 
 		// ---------- CREATE CHANNEL ----------
-		ChannelCreateUpdateDTO channelDto = new ChannelCreateUpdateDTO("chan1","text", guild.id());
+		// Le DTO prend maintenant l'ID Snowflake du channel en premier argument
+		ChannelCreateDTO channelDto = new ChannelCreateDTO(
+			CHANNEL_SNOWFLAKE,
+			"chan1",
+			"text", 
+			guild.id()
+		);
 		ChannelDTO channel = given()
 				.contentType(ContentType.JSON)
 				.body(channelDto)
@@ -42,9 +57,13 @@ class ChannelResourceTest {
 			.then()
 				.statusCode(201)
 				.extract().as(ChannelDTO.class);
+		
+		// Vérification de l'ID fourni
+		assertEquals(CHANNEL_SNOWFLAKE, channel.id());
 
 		// ---------- CREATE ROLE ----------
-		RoleCreateUpdateDTO roleDto = new RoleCreateUpdateDTO("role1", 1L, guild.id());
+		// Le DTO prend maintenant l'ID Snowflake du rôle en premier argument
+		RoleCreateDTO roleDto = new RoleCreateDTO(ROLE_SNOWFLAKE, "role1", 1L, guild.id());
 		RoleDTO role = given()
 				.contentType(ContentType.JSON)
 				.body(roleDto)
@@ -53,6 +72,9 @@ class ChannelResourceTest {
 			.then()
 				.statusCode(201)
 				.extract().as(RoleDTO.class);
+		
+		// Vérification de l'ID fourni
+		assertEquals(ROLE_SNOWFLAKE, role.id());
 
 		// ---------- ADD RELATION ----------
 		given().when().put("/channels/{channelId}/roles/{roleId}", channel.id(), role.id())
