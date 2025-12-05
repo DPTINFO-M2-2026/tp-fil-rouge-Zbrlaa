@@ -2,8 +2,6 @@ package fr.utln.spelerin.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-// Snowflake IDs are provided as Strings (no UUID generator)
-// import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -15,16 +13,15 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "guilds")
 @Getter
-@Setter//Voir pour limiter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @ToString(onlyExplicitlyIncluded = true)
-// @JsonIgnoreProperties(value = {"users", "roles", "channels"}, ignoreUnknown = true)
 public class Guild {
 	@Id
 	@ToString.Include
-	private String id;
+	private long id;
 
 	@Column(nullable = false)
 	@ToString.Include
@@ -34,7 +31,6 @@ public class Guild {
 	@ToString.Include
 	private Instant createdAt;
 
-	// @JsonIgnoreProperties({"guilds", "roles"})
 	@Builder.Default
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(
@@ -44,12 +40,10 @@ public class Guild {
 	)
 	private Set<User> users = new HashSet<>();
 
-	// @JsonIgnoreProperties({"guild", "users", "accessibleChannels"})
 	@Builder.Default
 	@OneToMany(mappedBy = "guild", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Role> roles = new HashSet<>();
 
-	// @JsonIgnoreProperties({"guild", "rolesWithAccess"})
 	@Builder.Default
 	@OneToMany(mappedBy = "guild", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Channel> channels = new HashSet<>();
@@ -106,7 +100,7 @@ public class Guild {
 
 
 	@ToString.Include(name = "userIds")
-	public Set<String> getUserIds() {
+	public Set<Long> getUserIds() {
 		return users.stream()
 				.map(User::getId)
 				.filter(Objects::nonNull)
@@ -114,7 +108,7 @@ public class Guild {
 	}
 
 	@ToString.Include(name = "roleIds")
-	public Set<String> getRoleIds() {
+	public Set<Long> getRoleIds() {
 		return roles.stream()
 				.map(Role::getId)
 				.filter(Objects::nonNull)
@@ -122,7 +116,7 @@ public class Guild {
 	}
 
 	@ToString.Include(name = "channelIds")
-	public Set<String> getChannelIds() {
+	public Set<Long> getChannelIds() {
 		return channels.stream()
 				.map(Channel::getId)
 				.filter(Objects::nonNull)

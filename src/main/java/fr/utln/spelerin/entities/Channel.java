@@ -3,9 +3,6 @@ package fr.utln.spelerin.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-// Snowflake IDs are provided as Strings (no UUID generator)
-// import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -20,11 +17,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @ToString(onlyExplicitlyIncluded = true)
-// @JsonIgnoreProperties(value = {"guild", "rolesWithAccess"}, ignoreUnknown = true)
 public class Channel {
 	@Id
 	@ToString.Include
-	private String id;
+	private long id;
 
 	@Column(nullable = false)
 	@ToString.Include
@@ -34,12 +30,10 @@ public class Channel {
 	@ToString.Include
 	private String type;
 
-	// @JsonIgnoreProperties({"users", "roles", "channels"})
 	@ManyToOne
 	@JoinColumn(name = "guild_id", nullable = false)
 	private Guild guild;
 
-	// @JsonIgnoreProperties({"guild", "users", "accessibleChannels"})
 	@Builder.Default
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(
@@ -66,12 +60,12 @@ public class Channel {
 
 
 	@ToString.Include(name = "guildId")
-	public String getGuildId() {
+	public long getGuildId() {
 		return guild != null ? guild.getId() : null;
 	}
 
 	@ToString.Include(name = "roleIds")
-	public Set<String> getRoleIds() {
+	public Set<Long> getRoleIds() {
 		return rolesWithAccess.stream()
 			.map(Role::getId)
 			.filter(Objects::nonNull)

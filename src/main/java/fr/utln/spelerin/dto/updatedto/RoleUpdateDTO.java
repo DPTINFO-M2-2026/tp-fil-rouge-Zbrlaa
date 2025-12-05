@@ -2,6 +2,6 @@ package fr.utln.spelerin.dto.updatedto;
 
 public record RoleUpdateDTO(
 	String name,
-	Long permissions,
-	String guildId
+	long permissions,
+	long guildId
 ){}

@@ -1,8 +1,8 @@
 package fr.utln.spelerin.dto.createdto;
 
 public record RoleCreateDTO(
-	String id,
+	long id,
 	String name,
-	Long permissions,
-	String guildId
+	long permissions,
+	long guildId
 ){}

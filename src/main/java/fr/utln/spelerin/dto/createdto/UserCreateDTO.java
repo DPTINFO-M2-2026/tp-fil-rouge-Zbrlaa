@@ -2,7 +2,7 @@ package fr.utln.spelerin.dto.createdto;
 
 
 public record UserCreateDTO(
-	String id,
+	long id,
 	String username,
 	String displayName
 ){}

@@ -5,7 +5,7 @@ import java.util.Set;
 
 
 public record GuildDTO(
-	String id,
+	long id,
 	String name,
 	Instant createdAt,
 	Set<String> userIds,

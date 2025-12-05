@@ -1,8 +1,8 @@
 package fr.utln.spelerin.dto.createdto;
 
 public record ChannelCreateDTO(
-	String id,
+	long id,
 	String name,
-	String type,
-	String guildId
+	int type,
+	long guildId
 ){ }
