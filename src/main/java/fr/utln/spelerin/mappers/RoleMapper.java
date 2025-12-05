@@ -23,6 +23,7 @@ public class RoleMapper {
 	// DTO -> Entity
 	public static Role toEntity(RoleCreateDTO dto, Guild guild) {
 		return Role.builder()
+				.id(dto.id())
 				.name(dto.name())
 				.permissions(dto.permissions())
 				.guild(guild)

@@ -22,6 +22,7 @@ public class UserMapper {
 	// DTO -> Entity
 	public static User toEntity(UserCreateDTO dto) {
 		return User.builder()
+				.id(dto.id())
 				.username(dto.username())
 				.displayName(dto.displayName())
 				.build();

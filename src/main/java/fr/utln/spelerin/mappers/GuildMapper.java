@@ -22,6 +22,7 @@ public class GuildMapper {
 	// DTO -> Entity
 	public static Guild toEntity(GuildCreateDTO dto) {
 		return Guild.builder()
+				.id(dto.id())
 				.name(dto.name())
 				.build();
 	}

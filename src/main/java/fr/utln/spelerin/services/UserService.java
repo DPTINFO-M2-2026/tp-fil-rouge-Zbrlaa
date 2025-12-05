@@ -65,9 +65,10 @@ public class UserService {
 
 	public UserDTO addGuildToUser(String userId, String guildId) {
 		User user = userRepository.findById(userId);
-		Guild guild = guildRepository.findById(guildId);
-
+	
 		if (user == null) throw new NoSuchElementException("User not found: " + userId);
+
+		Guild guild = guildRepository.findById(guildId);
 		if (guild == null) throw new NoSuchElementException("Guild not found: " + guildId);
 
 		user.addGuild(guild);
