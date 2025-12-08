@@ -22,8 +22,8 @@ import static org.mockito.ArgumentMatchers.any;
 class RoleServiceTest {
 
 	// Faux IDs (Snowflakes) pour la stabilité des tests
-	private static final String MOCK_GUILD_ID = "123456789012345678"; 
-	private static final String MOCK_ROLE_ID = "246813579024681357"; // Nouveau Snowflake pour le rôle
+	private static final Long MOCK_GUILD_ID = 123456789012345678L; 
+	private static final Long MOCK_ROLE_ID = 246813579024681357L;
 
 	@Inject
 	RoleService roleService;
@@ -74,7 +74,7 @@ class RoleServiceTest {
 	@Test
 	void createRole_GuildNotFound_ThrowsException() {
 		// ARRANGE
-		String unknownGuildId = "000000000000000001";
+		Long unknownGuildId = 000000000000000001L;
 		// Le DTO doit toujours contenir un ID de Rôle valide pour l'initialisation
 		RoleCreateDTO dto = new RoleCreateDTO(MOCK_ROLE_ID, "Admin", 8L, unknownGuildId);
 

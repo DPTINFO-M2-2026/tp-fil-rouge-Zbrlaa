@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTestResource(PostgresTestResource.class)
 class UserRepositoryTest {
 
-	private static final String USER_SNOWFLAKE = "500000000000000000";
-	private static final String USER_SNOWFLAKE_FIND = "600000000000000000";
+	private static final Long USER_SNOWFLAKE = 500000000000000000L;
+	private static final Long USER_SNOWFLAKE_FIND = 600000000000000000L;
 
 	@Inject
 	UserRepository userRepository;

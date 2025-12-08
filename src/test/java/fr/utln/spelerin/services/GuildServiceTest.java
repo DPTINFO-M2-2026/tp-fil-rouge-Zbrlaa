@@ -21,8 +21,8 @@ import static org.mockito.ArgumentMatchers.any;
 class GuildServiceTest {
 
 	// Faux IDs (Snowflakes) pour la stabilité des tests
-	private static final String MOCK_GUILD_ID = "123456789012345678"; 
-	private static final String MOCK_USER_ID = "987654321098765432";
+	private static final Long MOCK_GUILD_ID = 123456789012345678L;
+	private static final Long MOCK_USER_ID = 987654321098765432L;
 
 	@Inject
 	GuildService guildService;

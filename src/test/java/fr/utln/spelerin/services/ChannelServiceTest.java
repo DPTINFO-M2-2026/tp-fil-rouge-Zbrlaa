@@ -20,8 +20,8 @@ import static org.mockito.ArgumentMatchers.any;
 class ChannelServiceTest {
 
 	// Faux IDs (Snowflakes) pour la stabilité des tests
-	private static final String MOCK_GUILD_ID = "123456789012345678"; 
-	private static final String MOCK_CHANNEL_ID = "987654321098765432"; 
+	private static final Long MOCK_GUILD_ID = 123456789012345678L; 
+	private static final Long MOCK_CHANNEL_ID = 987654321098765432L; 
 
 	@Inject
 	ChannelService channelService; // On injecte le vrai Service
@@ -46,7 +46,7 @@ class ChannelServiceTest {
 		ChannelCreateDTO dto = new ChannelCreateDTO(
 			MOCK_CHANNEL_ID, 
 			"Général", 
-			"text", 
+			0,
 			MOCK_GUILD_ID
 		);
 
@@ -73,13 +73,13 @@ class ChannelServiceTest {
 	@Test
 	void createChannel_GuildNotFound_ShouldThrowException() {
 		// ARRANGE
-		String unknownGuildId = "000000000000000001"; // ID inconnu pour simuler l'échec
+		Long unknownGuildId = 000000000000000001L;
 
 		// Le DTO doit être créé avec le Channel ID en premier argument
 		ChannelCreateDTO dto = new ChannelCreateDTO(
-			MOCK_CHANNEL_ID, // Utilise la constante pour le Channel
+			MOCK_CHANNEL_ID,
 			"Général", 
-			"text", 
+			0,
 			unknownGuildId
 		);
 

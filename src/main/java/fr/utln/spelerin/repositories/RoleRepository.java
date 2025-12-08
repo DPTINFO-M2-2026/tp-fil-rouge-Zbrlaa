@@ -6,5 +6,5 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 
 @ApplicationScoped
-public class RoleRepository implements PanacheRepositoryBase<Role, String>{
+public class RoleRepository implements PanacheRepositoryBase<Role, Long>{
 }

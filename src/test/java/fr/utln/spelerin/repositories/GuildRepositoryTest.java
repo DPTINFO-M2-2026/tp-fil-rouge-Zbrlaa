@@ -14,8 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTestResource(PostgresTestResource.class)
 class GuildRepositoryTest {
 
-	// Snowflake de test fixe pour la reproductibilité
-	private static final String GUILD_SNOWFLAKE = "200000000000000000";
+	private static final Long GUILD_SNOWFLAKE = 200000000000000000L;
 
 	@Inject
 	GuildRepository guildRepository;

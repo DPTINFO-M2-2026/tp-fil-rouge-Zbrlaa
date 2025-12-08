@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class GuildResourceTest {
 
 	// Snowflakes de test fixes pour la reproductibilité
-	private static final String GUILD_SNOWFLAKE = "111111111111111111";
-	private static final String USER_SNOWFLAKE = "222222222222222222";
-	private static final String ROLE_SNOWFLAKE = "333333333333333333";
-	private static final String CHANNEL_SNOWFLAKE = "444444444444444444";
+	private static final Long GUILD_SNOWFLAKE = 111111111111111111L;
+	private static final Long USER_SNOWFLAKE = 222222222222222222L;
+	private static final Long ROLE_SNOWFLAKE = 333333333333333333L;
+	private static final Long CHANNEL_SNOWFLAKE = 444444444444444444L;
 
 
 	@Test
@@ -75,7 +75,7 @@ class GuildResourceTest {
 
 		// ---------- CREATE CHANNEL ----------
 		// Le DTO doit fournir le Snowflake
-		ChannelCreateDTO channelDto = new ChannelCreateDTO(CHANNEL_SNOWFLAKE, "chan1","text", guild.id());
+		ChannelCreateDTO channelDto = new ChannelCreateDTO(CHANNEL_SNOWFLAKE, "chan1",0, guild.id());
 		ChannelDTO channel = given()
 				.contentType(ContentType.JSON)
 				.body(channelDto)

@@ -13,7 +13,6 @@ public class UserMapper {
 				user.getId(),
 				user.getUsername(),
 				user.getDisplayName(),
-				user.getJoinedAt(),
 				user.getGuildIds(),
 				user.getRoleIds()
 		);

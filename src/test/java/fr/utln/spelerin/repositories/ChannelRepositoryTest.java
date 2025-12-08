@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTestResource(PostgresTestResource.class)
 class ChannelRepositoryTest {
 
-	private static final String GUILD_SNOWFLAKE = "123456789012345678";
-	private static final String CHANNEL_SNOWFLAKE = "987654321098765432";
+	private static final Long GUILD_SNOWFLAKE = 123456789012345678L;
+	private static final Long CHANNEL_SNOWFLAKE = 987654321098765432L;
 
 	@Inject
 	ChannelRepository channelRepository;
@@ -40,7 +40,7 @@ class ChannelRepositoryTest {
 		Channel c = Channel.builder()
 				.id(CHANNEL_SNOWFLAKE) // <--- AJOUT CRITIQUE
 				.name("tc_channel")
-				.type("text")
+				.type(0)
 				.guild(g)
 				.build();
 

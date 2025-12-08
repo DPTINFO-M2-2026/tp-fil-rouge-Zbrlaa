@@ -20,9 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class ChannelResourceTest {
 	
 	// Snowflakes de test fixes pour la reproductibilité
-	private static final String GUILD_SNOWFLAKE = "100000000000000001";
-	private static final String CHANNEL_SNOWFLAKE = "200000000000000002";
-	private static final String ROLE_SNOWFLAKE = "300000000000000003";
+	private static final Long GUILD_SNOWFLAKE = 100000000000000001L;
+	private static final Long CHANNEL_SNOWFLAKE = 200000000000000002L;
+	private static final Long ROLE_SNOWFLAKE = 300000000000000003L;
 
 	@Test
 	void crud_and_relations_channel() {
@@ -46,7 +46,7 @@ class ChannelResourceTest {
 		ChannelCreateDTO channelDto = new ChannelCreateDTO(
 			CHANNEL_SNOWFLAKE,
 			"chan1",
-			"text", 
+			0,
 			guild.id()
 		);
 		ChannelDTO channel = given()

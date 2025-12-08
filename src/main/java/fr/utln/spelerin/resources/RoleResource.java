@@ -5,6 +5,7 @@ import fr.utln.spelerin.dto.createdto.RoleCreateDTO;
 import fr.utln.spelerin.dto.updatedto.RoleUpdateDTO;
 import fr.utln.spelerin.services.RoleService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -65,7 +66,7 @@ public class RoleResource {
 	})
 	public Response getById(
 		@Parameter(description = "Role Snowflake ID", required = true, example = "666666666666666666")
-		@PathParam("id") String id
+		@PathParam("id") Long id
 	) {
 		return roleService.getRoleById(id)
 				.map(dto -> Response.ok(dto).build())
@@ -85,6 +86,7 @@ public class RoleResource {
 	public Response create(
 		@RequestBody(description = "DTO for role creation (must include Role Snowflake ID and parent Guild ID)", required = true,
 			content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RoleCreateDTO.class)))
+		@Valid
 		RoleCreateDTO dto
 	) {
 		try {
@@ -109,9 +111,10 @@ public class RoleResource {
 	})
 	public Response update(
 		@Parameter(description = "Snowflake ID of the role to update", required = true, example = "666666666666666666")
-		@PathParam("id") String id, 
+		@PathParam("id") Long id, 
 		@RequestBody(description = "DTO for role update (must include the parent Guild ID)", required = true,
 			content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RoleUpdateDTO.class)))
+		@Valid
 		RoleUpdateDTO dto
 	) {
 		try {
@@ -132,7 +135,7 @@ public class RoleResource {
 	})
 	public Response delete(
 		@Parameter(description = "Snowflake ID of the role to delete", required = true, example = "666666666666666666")
-		@PathParam("id") String id
+		@PathParam("id") Long id
 	) {
 		return roleService.deleteRole(id) ? Response.noContent().build()
 										: Response.status(Response.Status.NOT_FOUND).build();
@@ -153,9 +156,9 @@ public class RoleResource {
 	})
 	public Response addUser(
 		@Parameter(description = "Snowflake ID of the role", required = true, example = "666666666666666666")
-		@PathParam("roleId") String roleId, 
+		@PathParam("roleId") Long roleId, 
 		@Parameter(description = "Snowflake ID of the user to add", required = true, example = "777777777777777777")
-		@PathParam("userId") String userId
+		@PathParam("userId") Long userId
 	) {
 		try {
 			return Response.ok(roleService.addUserToRole(roleId, userId)).build();
@@ -177,9 +180,9 @@ public class RoleResource {
 	})
 	public Response removeUser(
 		@Parameter(description = "Snowflake ID of the role", required = true, example = "666666666666666666")
-		@PathParam("roleId") String roleId, 
+		@PathParam("roleId") Long roleId, 
 		@Parameter(description = "Snowflake ID of the user to remove", required = true, example = "777777777777777777")
-		@PathParam("userId") String userId
+		@PathParam("userId") Long userId
 	) {
 		try {
 			return Response.ok(roleService.removeUserFromRole(roleId, userId)).build();
@@ -203,9 +206,9 @@ public class RoleResource {
 	})
 	public Response addChannel(
 		@Parameter(description = "Snowflake ID of the role", required = true, example = "666666666666666666")
-		@PathParam("roleId") String roleId, 
+		@PathParam("roleId") Long roleId, 
 		@Parameter(description = "Snowflake ID of the channel to grant access to", required = true, example = "888888888888888888")
-		@PathParam("channelId") String channelId
+		@PathParam("channelId") Long channelId
 	) {
 		try {
 			return Response.ok(roleService.addChannelToRole(roleId, channelId)).build();
@@ -227,9 +230,9 @@ public class RoleResource {
 	})
 	public Response removeChannel(
 		@Parameter(description = "Snowflake ID of the role", required = true, example = "666666666666666666")
-		@PathParam("roleId") String roleId, 
+		@PathParam("roleId") Long roleId, 
 		@Parameter(description = "Snowflake ID of the channel to remove access from", required = true, example = "888888888888888888")
-		@PathParam("channelId") String channelId
+		@PathParam("channelId") Long channelId
 	) {
 		try {
 			return Response.ok(roleService.removeChannelFromRole(roleId, channelId)).build();

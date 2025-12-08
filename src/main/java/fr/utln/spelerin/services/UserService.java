@@ -39,7 +39,7 @@ public class UserService {
 				.toList();
 	}
 
-	public Optional<UserDTO> getUserById(String id) {
+	public Optional<UserDTO> getUserById(Long id) {
 		return userRepository.findByIdOptional(id)
 				.map(UserMapper::toDTO);
 	}
@@ -50,7 +50,7 @@ public class UserService {
 		return UserMapper.toDTO(user);
 	}
 
-	public UserDTO updateUser(String id, UserUpdateDTO dto) {
+	public UserDTO updateUser(Long id, UserUpdateDTO dto) {
 		User user = userRepository.findById(id);
 		if (user == null) {
 			throw new NoSuchElementException("User not found with ID: " + id);
@@ -59,11 +59,11 @@ public class UserService {
 		return UserMapper.toDTO(user);
 	}
 
-	public boolean deleteUser(String id) {
+	public boolean deleteUser(Long id) {
 		return userRepository.deleteById(id);
 	}
 
-	public UserDTO addGuildToUser(String userId, String guildId) {
+	public UserDTO addGuildToUser(Long userId, Long guildId) {
 		User user = userRepository.findById(userId);
 	
 		if (user == null) throw new NoSuchElementException("User not found: " + userId);
@@ -75,7 +75,7 @@ public class UserService {
 		return UserMapper.toDTO(user);
 	}
 
-	public UserDTO removeGuildFromUser(String userId, String guildId) {
+	public UserDTO removeGuildFromUser(Long userId, Long guildId) {
 		User user = userRepository.findById(userId);
 		Guild guild = guildRepository.findById(guildId);
 
@@ -86,7 +86,7 @@ public class UserService {
 		return UserMapper.toDTO(user);
 	}
 
-	public UserDTO addRoleToUser(String userId, String roleId) {
+	public UserDTO addRoleToUser(Long userId, Long roleId) {
 		User user = userRepository.findById(userId);
 		Role role = roleRepository.findById(roleId);
 
@@ -97,7 +97,7 @@ public class UserService {
 		return UserMapper.toDTO(user);
 	}
 
-	public UserDTO removeRoleFromUser(String userId, String roleId) {
+	public UserDTO removeRoleFromUser(Long userId, Long roleId) {
 		User user = userRepository.findById(userId);
 		Role role = roleRepository.findById(roleId);
 

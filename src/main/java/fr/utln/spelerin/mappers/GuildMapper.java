@@ -12,7 +12,6 @@ public class GuildMapper {
 		return new GuildDTO(
 				guild.getId(),
 				guild.getName(),
-				guild.getCreatedAt(),
 				guild.getUserIds(),
 				guild.getRoleIds(),
 				guild.getChannelIds()

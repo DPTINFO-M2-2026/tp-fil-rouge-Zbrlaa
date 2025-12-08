@@ -5,6 +5,7 @@ import fr.utln.spelerin.dto.createdto.ChannelCreateDTO;
 import fr.utln.spelerin.dto.updatedto.ChannelUpdateDTO;
 import fr.utln.spelerin.services.ChannelService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -63,7 +64,7 @@ public class ChannelResource {
 	})
 	public Response getById(
 		@Parameter(description = "Channel Snowflake ID", required = true, example = "987654321098765432") 
-		@PathParam("id") String id
+		@PathParam("id") Long id
 	) {
 		return channelService.getChannelById(id)
 				.map(dto -> Response.ok(dto).build())
@@ -83,13 +84,13 @@ public class ChannelResource {
 	public Response create(
 		@RequestBody(description = "DTO for channel creation (must include the Snowflake ID)", required = true, 
 			content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ChannelCreateDTO.class)))
+		@Valid
 		ChannelCreateDTO dto
 	) {
 		try {
 			ChannelDTO createdChannel = channelService.createChannel(dto);
 			return Response.status(Response.Status.CREATED).entity(createdChannel).build();
 		} catch (IllegalArgumentException e) {
-			// Guild non trouvée => 400 Bad Request
 			return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
@@ -108,9 +109,10 @@ public class ChannelResource {
 	})
 	public Response update(
 		@Parameter(description = "Snowflake ID of the channel to update", required = true, example = "987654321098765432")
-		@PathParam("id") String id, 
+		@PathParam("id") Long id, 
 		@RequestBody(description = "DTO for channel update", required = true, 
 			content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ChannelUpdateDTO.class)))
+		@Valid
 		ChannelUpdateDTO dto
 	) {
 		try {
@@ -134,7 +136,7 @@ public class ChannelResource {
 	})
 	public Response delete(
 		@Parameter(description = "Snowflake ID of the channel to delete", required = true, example = "987654321098765432")
-		@PathParam("id") String id
+		@PathParam("id") Long id
 	) {
 		boolean deleted = channelService.deleteChannel(id);
 		return deleted ? Response.noContent().build()
@@ -156,9 +158,9 @@ public class ChannelResource {
 	})
 	public Response addRole(
 		@Parameter(description = "Snowflake ID of the channel", required = true, example = "987654321098765432")
-		@PathParam("channelId") String channelId, 
+		@PathParam("channelId") Long channelId, 
 		@Parameter(description = "Snowflake ID of the role to associate", required = true, example = "246813579024681357")
-		@PathParam("roleId") String roleId
+		@PathParam("roleId") Long roleId
 	) {
 		try {
 			ChannelDTO channel = channelService.addRoleToChannel(channelId, roleId);
@@ -181,9 +183,9 @@ public class ChannelResource {
 	})
 	public Response removeRole(
 		@Parameter(description = "Snowflake ID of the channel", required = true, example = "987654321098765432")
-		@PathParam("channelId") String channelId, 
+		@PathParam("channelId") Long channelId, 
 		@Parameter(description = "Snowflake ID of the role to disassociate", required = true, example = "246813579024681357")
-		@PathParam("roleId") String roleId
+		@PathParam("roleId") Long roleId
 	) {
 		try {
 			ChannelDTO channel = channelService.removeRoleFromChannel(channelId, roleId);

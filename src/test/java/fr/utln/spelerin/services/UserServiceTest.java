@@ -21,8 +21,8 @@ import static org.mockito.ArgumentMatchers.any;
 class UserServiceTest {
 
 	// Faux IDs (Snowflakes) pour la stabilité des tests
-	private static final String MOCK_USER_ID = "999888777666555444"; 
-	private static final String MOCK_GUILD_ID = "111222333444555666"; 
+	private static final Long MOCK_USER_ID = 999888777666555444L; 
+	private static final Long MOCK_GUILD_ID = 111222333444555666L; 
 
 	@Inject
 	UserService userService;
@@ -95,6 +95,6 @@ class UserServiceTest {
 		assertThrows(NoSuchElementException.class, () -> userService.addGuildToUser(MOCK_USER_ID, MOCK_GUILD_ID));
 		
 		// Vérifier que la recherche de Guilde n'a jamais été faite (si l'User n'est pas trouvé en premier)
-		Mockito.verify(guildRepository, Mockito.never()).findById(any(String.class));
+		Mockito.verify(guildRepository, Mockito.never()).findById(any(Long.class));
 	}
 }

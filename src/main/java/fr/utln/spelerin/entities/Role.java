@@ -28,7 +28,7 @@ public class Role {
 
 	@Column(nullable = false)
 	@ToString.Include
-	private Long permissions;
+	private long permissions;
 
 	@ManyToOne
 	@JoinColumn(name = "guild_id", nullable = false)

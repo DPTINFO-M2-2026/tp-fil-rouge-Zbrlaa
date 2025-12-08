@@ -21,9 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserResourceTest {
 
 	// Snowflakes de test fixes pour la reproductibilité
-	private static final String USER_SNOWFLAKE = "101010101010101010";
-	private static final String GUILD_SNOWFLAKE = "202020202020202020";
-	private static final String ROLE_SNOWFLAKE = "303030303030303030";
+	private static final Long USER_SNOWFLAKE = 101010101010101010L;
+	private static final Long GUILD_SNOWFLAKE = 202020202020202020L;
+	private static final Long ROLE_SNOWFLAKE = 303030303030303030L;
 
 	@Test
 	void crud_and_relations_user() {

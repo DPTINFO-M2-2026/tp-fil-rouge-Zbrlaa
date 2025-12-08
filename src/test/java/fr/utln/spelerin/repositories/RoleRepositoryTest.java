@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTestResource(PostgresTestResource.class)
 class RoleRepositoryTest {
 
-	private static final String GUILD_SNOWFLAKE = "300000000000000000";
-	private static final String ROLE_SNOWFLAKE = "400000000000000000";
+	private static final Long GUILD_SNOWFLAKE = 300000000000000000L;
+	private static final Long ROLE_SNOWFLAKE = 400000000000000000L;
 
 	@Inject
 	RoleRepository roleRepository;

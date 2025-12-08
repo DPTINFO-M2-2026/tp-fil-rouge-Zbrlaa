@@ -5,28 +5,29 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserEntityTest{
+	private static final long GUILD_SNOWFLAKE = 555555555555555555L;
+	private static final long ROLE_SNOWFLAKE = 666666666666666666L;
+	private static final long USER_SNOWFLAKE = 777777777777777777L;
+	
 	@Test
 	void addAndRemoveGuildAndRole_shouldMaintainBidirectionalRelationsAndToStringIds(){
 		User user = User.builder()
 				.username("testuser")
 				.displayName("Test User")
 				.build();
-		String userId = String.valueOf(System.nanoTime());
-		user.setId(userId);
+		user.setId(USER_SNOWFLAKE);
 
 		Guild guild = Guild.builder().name("G1").build();
-		String guildId = String.valueOf(System.nanoTime());
-		guild.setId(guildId);
+		guild.setId(GUILD_SNOWFLAKE);
 
 		Role role = Role.builder().name("R1").permissions(1L).build();
-		String roleId = String.valueOf(System.nanoTime());
-		role.setId(roleId);
+		role.setId(ROLE_SNOWFLAKE);
 
 		// add guild via user helper
 		user.addGuild(guild);
 		assertTrue(user.getGuilds().contains(guild));
 		assertTrue(guild.getUsers().contains(user));
-		assertTrue(user.getGuildIds().contains(guildId));
+		assertTrue(user.getGuildIds().contains(GUILD_SNOWFLAKE));
 
 		// remove guild
 		user.removeGuild(guild);
@@ -37,7 +38,7 @@ class UserEntityTest{
 		user.addRole(role);
 		assertTrue(user.getRoles().contains(role));
 		assertTrue(role.getUsers().contains(user));
-		assertTrue(user.getRoleIds().contains(roleId));
+		assertTrue(user.getRoleIds().contains(ROLE_SNOWFLAKE));
 
 		// remove role
 		user.removeRole(role);

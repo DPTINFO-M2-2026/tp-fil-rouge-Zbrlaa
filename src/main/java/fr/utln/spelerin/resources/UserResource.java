@@ -5,6 +5,7 @@ import fr.utln.spelerin.dto.createdto.UserCreateDTO;
 import fr.utln.spelerin.dto.updatedto.UserUpdateDTO;
 import fr.utln.spelerin.services.UserService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -65,7 +66,7 @@ public class UserResource {
 	})
 	public Response getById(
 		@Parameter(description = "User Snowflake ID", required = true, example = "101010101010101010")
-		@PathParam("id") String id
+		@PathParam("id") Long id
 	) {
 		return userService.getUserById(id)
 				.map(dto -> Response.ok(dto).build())
@@ -82,6 +83,7 @@ public class UserResource {
 	public Response create(
 		@RequestBody(description = "DTO for user creation (must include the Snowflake ID)", required = true,
 			content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserCreateDTO.class)))
+		@Valid
 		UserCreateDTO dto
 	) {
 		UserDTO user = userService.createUser(dto);
@@ -101,9 +103,10 @@ public class UserResource {
 	})
 	public Response update(
 		@Parameter(description = "Snowflake ID of the user to update", required = true, example = "101010101010101010")
-		@PathParam("id") String id, 
+		@PathParam("id") Long id, 
 		@RequestBody(description = "DTO for user update", required = true,
 			content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserUpdateDTO.class)))
+		@Valid
 		UserUpdateDTO dto
 	) {
 		try {
@@ -122,7 +125,7 @@ public class UserResource {
 	})
 	public Response delete(
 		@Parameter(description = "Snowflake ID of the user to delete", required = true, example = "101010101010101010")
-		@PathParam("id") String id
+		@PathParam("id") Long id
 	) {
 		return userService.deleteUser(id) ? Response.noContent().build()
 										: Response.status(Response.Status.NOT_FOUND).build();
@@ -143,9 +146,9 @@ public class UserResource {
 	})
 	public Response addGuild(
 		@Parameter(description = "Snowflake ID of the user", required = true, example = "101010101010101010")
-		@PathParam("userId") String userId, 
+		@PathParam("userId") Long userId, 
 		@Parameter(description = "Snowflake ID of the guild to add", required = true, example = "202020202020202020")
-		@PathParam("guildId") String guildId
+		@PathParam("guildId") Long guildId
 	) {
 		try {
 			return Response.ok(userService.addGuildToUser(userId, guildId)).build();
@@ -167,9 +170,9 @@ public class UserResource {
 	})
 	public Response removeGuild(
 		@Parameter(description = "Snowflake ID of the user", required = true, example = "101010101010101010")
-		@PathParam("userId") String userId, 
+		@PathParam("userId") Long userId, 
 		@Parameter(description = "Snowflake ID of the guild to remove", required = true, example = "202020202020202020")
-		@PathParam("guildId") String guildId
+		@PathParam("guildId") Long guildId
 	) {
 		try {
 			return Response.ok(userService.removeGuildFromUser(userId, guildId)).build();
@@ -193,9 +196,9 @@ public class UserResource {
 	})
 	public Response addRole(
 		@Parameter(description = "Snowflake ID of the user", required = true, example = "101010101010101010")
-		@PathParam("userId") String userId, 
+		@PathParam("userId") Long userId, 
 		@Parameter(description = "Snowflake ID of the role to add", required = true, example = "303030303030303030")
-		@PathParam("roleId") String roleId
+		@PathParam("roleId") Long roleId
 	) {
 		try {
 			return Response.ok(userService.addRoleToUser(userId, roleId)).build();
@@ -217,9 +220,9 @@ public class UserResource {
 	})
 	public Response removeRole(
 		@Parameter(description = "Snowflake ID of the user", required = true, example = "101010101010101010")
-		@PathParam("userId") String userId, 
+		@PathParam("userId") Long userId, 
 		@Parameter(description = "Snowflake ID of the role to remove", required = true, example = "303030303030303030")
-		@PathParam("roleId") String roleId
+		@PathParam("roleId") Long roleId
 	) {
 		try {
 			return Response.ok(userService.removeRoleFromUser(userId, roleId)).build();

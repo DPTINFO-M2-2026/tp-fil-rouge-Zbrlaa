@@ -3,7 +3,6 @@ package fr.utln.spelerin.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -27,10 +26,6 @@ public class Guild {
 	@ToString.Include
 	private String name;
 
-	@Column(name = "created_at", nullable = false)
-	@ToString.Include
-	private Instant createdAt;
-
 	@Builder.Default
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(
@@ -47,13 +42,6 @@ public class Guild {
 	@Builder.Default
 	@OneToMany(mappedBy = "guild", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Channel> channels = new HashSet<>();
-
-	@PrePersist
-	public void prePersist() {
-		if (createdAt == null) {
-			createdAt = Instant.now();
-		}
-	}
 
 
 	public void addUser(User user) {

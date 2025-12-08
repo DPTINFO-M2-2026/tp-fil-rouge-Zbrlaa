@@ -7,7 +7,7 @@ public record RoleDTO(
 	long id,
 	String name,
 	long permissions,
-	String guildId,
+	long guildId,
 	Set<Long> userIds,
 	Set<Long> accessibleChannelIds
 ){}

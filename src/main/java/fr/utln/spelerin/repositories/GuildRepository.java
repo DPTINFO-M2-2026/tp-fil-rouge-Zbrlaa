@@ -6,5 +6,5 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 
 @ApplicationScoped
-public class GuildRepository implements PanacheRepositoryBase<Guild, String>{
+public class GuildRepository implements PanacheRepositoryBase<Guild, Long>{
 }

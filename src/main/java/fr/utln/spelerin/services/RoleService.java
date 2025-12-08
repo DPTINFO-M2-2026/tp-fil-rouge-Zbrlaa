@@ -41,7 +41,7 @@ public class RoleService {
 		return roleRepository.listAll().stream().map(RoleMapper::toDTO).toList();
 	}
 
-	public Optional<RoleDTO> getRoleById(String id) {
+	public Optional<RoleDTO> getRoleById(Long id) {
 		return roleRepository.findByIdOptional(id).map(RoleMapper::toDTO);
 	}
 
@@ -55,7 +55,7 @@ public class RoleService {
 		return RoleMapper.toDTO(role);
 	}
 
-	public RoleDTO updateRole(String id, RoleUpdateDTO dto) {
+	public RoleDTO updateRole(Long id, RoleUpdateDTO dto) {
 		Role role = roleRepository.findById(id);
 		if (role == null) throw new NoSuchElementException("Role not found: " + id);
 
@@ -66,11 +66,11 @@ public class RoleService {
 		return RoleMapper.toDTO(role);
 	}
 
-	public boolean deleteRole(String id) {
+	public boolean deleteRole(Long id) {
 		return roleRepository.deleteById(id);
 	}
 
-	public RoleDTO addUserToRole(String roleId, String userId) {
+	public RoleDTO addUserToRole(Long roleId, Long userId) {
 		Role role = roleRepository.findById(roleId);
 		User user = userRepository.findById(userId);
 
@@ -81,7 +81,7 @@ public class RoleService {
 		return RoleMapper.toDTO(role);
 	}
 
-	public RoleDTO removeUserFromRole(String roleId, String userId) {
+	public RoleDTO removeUserFromRole(Long roleId, Long userId) {
 		Role role = roleRepository.findById(roleId);
 		User user = userRepository.findById(userId);
 
@@ -92,7 +92,7 @@ public class RoleService {
 		return RoleMapper.toDTO(role);
 	}
 
-	public RoleDTO addChannelToRole(String roleId, String channelId) {
+	public RoleDTO addChannelToRole(Long roleId, Long channelId) {
 		Role role = roleRepository.findById(roleId);
 		Channel channel = channelRepository.findById(channelId);
 
@@ -103,7 +103,7 @@ public class RoleService {
 		return RoleMapper.toDTO(role);
 	}
 
-	public RoleDTO removeChannelFromRole(String roleId, String channelId) {
+	public RoleDTO removeChannelFromRole(Long roleId, Long channelId) {
 		Role role = roleRepository.findById(roleId);
 		Channel channel = channelRepository.findById(channelId);
 

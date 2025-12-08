@@ -5,6 +5,7 @@ import fr.utln.spelerin.dto.createdto.GuildCreateDTO;
 import fr.utln.spelerin.dto.updatedto.GuildUpdateDTO;
 import fr.utln.spelerin.services.GuildService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -65,7 +66,7 @@ public class GuildResource {
     })
     public Response getById(
         @Parameter(description = "Guild Snowflake ID", required = true, example = "111111111111111111")
-        @PathParam("id") String id
+        @PathParam("id") Long id
     ) {
         return guildService.getGuildById(id)
                 .map(dto -> Response.ok(dto).build())
@@ -82,6 +83,7 @@ public class GuildResource {
     public Response create(
         @RequestBody(description = "DTO for guild creation (must include the Snowflake ID)", required = true,
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = GuildCreateDTO.class)))
+        @Valid
         GuildCreateDTO dto
     ) {
         return Response.status(Response.Status.CREATED)
@@ -101,9 +103,10 @@ public class GuildResource {
     })
     public Response update(
         @Parameter(description = "Snowflake ID of the guild to update", required = true, example = "111111111111111111")
-        @PathParam("id") String id, 
+        @PathParam("id") Long id, 
         @RequestBody(description = "DTO for guild name update", required = true,
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = GuildUpdateDTO.class)))
+        @Valid
         GuildUpdateDTO dto
     ) {
         try {
@@ -122,7 +125,7 @@ public class GuildResource {
     })
     public Response delete(
         @Parameter(description = "Snowflake ID of the guild to delete", required = true, example = "111111111111111111")
-        @PathParam("id") String id
+        @PathParam("id") Long id
     ) {
         return guildService.deleteGuild(id) ? Response.noContent().build()
                                             : Response.status(Response.Status.NOT_FOUND).build();
@@ -143,9 +146,9 @@ public class GuildResource {
     })
     public Response addUser(
         @Parameter(description = "Snowflake ID of the guild", required = true, example = "111111111111111111")
-        @PathParam("guildId") String guildId, 
+        @PathParam("guildId") Long guildId, 
         @Parameter(description = "Snowflake ID of the user to add", required = true, example = "222222222222222222")
-        @PathParam("userId") String userId
+        @PathParam("userId") Long userId
     ) {
         try {
             return Response.ok(guildService.addUserToGuild(guildId, userId)).build();
@@ -167,9 +170,9 @@ public class GuildResource {
     })
     public Response removeUser(
         @Parameter(description = "Snowflake ID of the guild", required = true, example = "111111111111111111")
-        @PathParam("guildId") String guildId, 
+        @PathParam("guildId") Long guildId, 
         @Parameter(description = "Snowflake ID of the user to remove", required = true, example = "222222222222222222")
-        @PathParam("userId") String userId
+        @PathParam("userId") Long userId
     ) {
         try {
             return Response.ok(guildService.removeUserFromGuild(guildId, userId)).build();
@@ -193,9 +196,9 @@ public class GuildResource {
     })
     public Response addRole(
         @Parameter(description = "Snowflake ID of the guild", required = true, example = "111111111111111111")
-        @PathParam("guildId") String guildId, 
+        @PathParam("guildId") Long guildId, 
         @Parameter(description = "Snowflake ID of the role to add", required = true, example = "333333333333333333")
-        @PathParam("roleId") String roleId
+        @PathParam("roleId") Long roleId
     ) {
         try {
             return Response.ok(guildService.addRoleToGuild(guildId, roleId)).build();
@@ -217,9 +220,9 @@ public class GuildResource {
     })
     public Response removeRole(
         @Parameter(description = "Snowflake ID of the guild", required = true, example = "111111111111111111")
-        @PathParam("guildId") String guildId, 
+        @PathParam("guildId") Long guildId, 
         @Parameter(description = "Snowflake ID of the role to remove", required = true, example = "333333333333333333")
-        @PathParam("roleId") String roleId
+        @PathParam("roleId") Long roleId
     ) {
         try {
             return Response.ok(guildService.removeRoleFromGuild(guildId, roleId)).build();
@@ -243,9 +246,9 @@ public class GuildResource {
     })
     public Response addChannel(
         @Parameter(description = "Snowflake ID of the guild", required = true, example = "111111111111111111")
-        @PathParam("guildId") String guildId, 
+        @PathParam("guildId") Long guildId, 
         @Parameter(description = "Snowflake ID of the channel to add", required = true, example = "444444444444444444")
-        @PathParam("channelId") String channelId
+        @PathParam("channelId") Long channelId
     ) {
         try {
             return Response.ok(guildService.addChannelToGuild(guildId, channelId)).build();
@@ -267,9 +270,9 @@ public class GuildResource {
     })
     public Response removeChannel(
         @Parameter(description = "Snowflake ID of the guild", required = true, example = "111111111111111111")
-        @PathParam("guildId") String guildId, 
+        @PathParam("guildId") Long guildId, 
         @Parameter(description = "Snowflake ID of the channel to remove", required = true, example = "444444444444444444")
-        @PathParam("channelId") String channelId
+        @PathParam("channelId") Long channelId
     ) {
         try {
             return Response.ok(guildService.removeChannelFromGuild(guildId, channelId)).build();

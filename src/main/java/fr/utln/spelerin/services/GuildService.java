@@ -41,7 +41,7 @@ public class GuildService {
 		return guildRepository.listAll().stream().map(GuildMapper::toDTO).toList();
 	}
 
-	public Optional<GuildDTO> getGuildById(String id) {
+	public Optional<GuildDTO> getGuildById(Long id) {
 		return guildRepository.findByIdOptional(id).map(GuildMapper::toDTO);
 	}
 
@@ -51,18 +51,18 @@ public class GuildService {
 		return GuildMapper.toDTO(guild);
 	}
 
-	public GuildDTO updateGuild(String id, GuildUpdateDTO dto) {
+	public GuildDTO updateGuild(Long id, GuildUpdateDTO dto) {
 		Guild guild = guildRepository.findById(id);
 		if (guild == null) throw new NoSuchElementException("Guild not found: " + id);
 		GuildMapper.updateEntity(guild, dto);
 		return GuildMapper.toDTO(guild);
 	}
 
-	public boolean deleteGuild(String id) {
+	public boolean deleteGuild(Long id) {
 		return guildRepository.deleteById(id);
 	}
 
-	public GuildDTO addUserToGuild(String guildId, String userId) {
+	public GuildDTO addUserToGuild(Long guildId, Long userId) {
 		Guild guild = guildRepository.findById(guildId);
 		User user = userRepository.findById(userId);
 
@@ -73,7 +73,7 @@ public class GuildService {
 		return GuildMapper.toDTO(guild);
 	}
 
-	public GuildDTO removeUserFromGuild(String guildId, String userId) {
+	public GuildDTO removeUserFromGuild(Long guildId, Long userId) {
 		Guild guild = guildRepository.findById(guildId);
 		User user = userRepository.findById(userId);
 
@@ -84,7 +84,7 @@ public class GuildService {
 		return GuildMapper.toDTO(guild);
 	}
 
-	public GuildDTO addRoleToGuild(String guildId, String roleId) {
+	public GuildDTO addRoleToGuild(Long guildId, Long roleId) {
 		Guild guild = guildRepository.findById(guildId);
 		Role role = roleRepository.findById(roleId);
 
@@ -95,7 +95,7 @@ public class GuildService {
 		return GuildMapper.toDTO(guild);
 	}
 
-	public GuildDTO removeRoleFromGuild(String guildId, String roleId) {
+	public GuildDTO removeRoleFromGuild(Long guildId, Long roleId) {
 		Guild guild = guildRepository.findById(guildId);
 		Role role = roleRepository.findById(roleId);
 
@@ -106,7 +106,7 @@ public class GuildService {
 		return GuildMapper.toDTO(guild);
 	}
 
-	public GuildDTO addChannelToGuild(String guildId, String channelId) {
+	public GuildDTO addChannelToGuild(Long guildId, Long channelId) {
 		Guild guild = guildRepository.findById(guildId);
 		Channel channel = channelRepository.findById(channelId);
 
@@ -117,7 +117,7 @@ public class GuildService {
 		return GuildMapper.toDTO(guild);
 	}
 
-	public GuildDTO removeChannelFromGuild(String guildId, String channelId) {
+	public GuildDTO removeChannelFromGuild(Long guildId, Long channelId) {
 		Guild guild = guildRepository.findById(guildId);
 		Channel channel = channelRepository.findById(channelId);
 

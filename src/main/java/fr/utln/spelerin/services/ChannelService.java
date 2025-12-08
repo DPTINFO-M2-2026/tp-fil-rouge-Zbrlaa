@@ -17,7 +17,6 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-// UUID import removed: using String IDs (Snowflake)
 
 @ApplicationScoped
 @Transactional
@@ -41,7 +40,7 @@ public class ChannelService {
 				.toList();
 	}
 
-	public Optional<ChannelDTO> getChannelById(String id) {
+	public Optional<ChannelDTO> getChannelById(Long id) {
 		return channelRepository.findByIdOptional(id)
 				.map(ChannelMapper::toDTO);
 	}
@@ -57,7 +56,7 @@ public class ChannelService {
 		return ChannelMapper.toDTO(channel);
 	}
 
-	public ChannelDTO updateChannel(String id, ChannelUpdateDTO dto) {
+	public ChannelDTO updateChannel(Long id, ChannelUpdateDTO dto) {
 		Channel channel = channelRepository.findById(id);
 		if (channel == null) {
 			throw new NoSuchElementException("Channel not found with ID: " + id);
@@ -74,11 +73,11 @@ public class ChannelService {
 		return ChannelMapper.toDTO(channel);
 	}
 
-	public boolean deleteChannel(String id) {
+	public boolean deleteChannel(Long id) {
 		return channelRepository.deleteById(id);
 	}
 
-	public ChannelDTO addRoleToChannel(String channelId, String roleId) {
+	public ChannelDTO addRoleToChannel(Long channelId, Long roleId) {
 		Channel channel = channelRepository.findById(channelId);
 		Role role = roleRepository.findById(roleId);
 
@@ -93,7 +92,7 @@ public class ChannelService {
 		return ChannelMapper.toDTO(channel);
 	}
 
-	public ChannelDTO removeRoleFromChannel(String channelId, String roleId) {
+	public ChannelDTO removeRoleFromChannel(Long channelId, Long roleId) {
 		Channel channel = channelRepository.findById(channelId);
 		Role role = roleRepository.findById(roleId);
 
