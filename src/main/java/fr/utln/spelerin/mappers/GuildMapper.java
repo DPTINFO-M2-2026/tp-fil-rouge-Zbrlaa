@@ -4,29 +4,34 @@ import fr.utln.spelerin.dto.GuildDTO;
 import fr.utln.spelerin.dto.createdto.GuildCreateDTO;
 import fr.utln.spelerin.dto.updatedto.GuildUpdateDTO;
 import fr.utln.spelerin.entities.Guild;
+import org.mapstruct.*;
 
 
-public class GuildMapper {
-	// Entity -> DTO
-	public static GuildDTO toDTO(Guild guild) {
-		return new GuildDTO(
-				guild.getId(),
-				guild.getName(),
-				guild.getUserIds(),
-				guild.getRoleIds(),
-				guild.getChannelIds()
-		);
-	}
+@Mapper(componentModel = "cdi")
+public interface GuildMapper {
 
-	// DTO -> Entity
-	public static Guild toEntity(GuildCreateDTO dto) {
-		return Guild.builder()
-				.id(dto.id())
-				.name(dto.name())
-				.build();
-	}
+	// ----------- Entity -> DTO -----------
+	@Mapping(target = "userIds", source = "userIds")
+	@Mapping(target = "roleIds", source = "roleIds")
+	@Mapping(target = "channelIds", source = "channelIds")
+	GuildDTO toDTO(Guild guild);
 
-	public static void updateEntity(Guild guild, GuildUpdateDTO dto) {
-		guild.setName(dto.name());
-	}
+
+	// ----------- CreateDTO -> Entity -----------
+	@Mapping(target = "users", ignore = true)
+	@Mapping(target = "roles", ignore = true)
+	@Mapping(target = "channels", ignore = true)
+	Guild toEntity(GuildCreateDTO dto);
+
+
+	// ----------- Update entity from UpdateDTO -----------
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "users", ignore = true)
+	@Mapping(target = "roles", ignore = true)
+	@Mapping(target = "channels", ignore = true)
+	@Mapping(target = "userIds", ignore = true)
+	@Mapping(target = "roleIds", ignore = true)
+	@Mapping(target = "channelIds", ignore = true)
+	void updateEntity(@MappingTarget Guild guild, GuildUpdateDTO dto);
 }

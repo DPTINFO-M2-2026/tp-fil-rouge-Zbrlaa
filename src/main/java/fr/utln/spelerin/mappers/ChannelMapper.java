@@ -5,33 +5,30 @@ import fr.utln.spelerin.dto.createdto.ChannelCreateDTO;
 import fr.utln.spelerin.dto.updatedto.ChannelUpdateDTO;
 import fr.utln.spelerin.entities.Channel;
 import fr.utln.spelerin.entities.Guild;
+import org.mapstruct.*;
 
+@Mapper(componentModel = "cdi")
+public interface ChannelMapper {
 
-public class ChannelMapper {
-	// Entity -> DTO
-	public static ChannelDTO toDTO(Channel channel) {
-		return new ChannelDTO(
-				channel.getId(),
-				channel.getName(),
-				channel.getType(),
-				channel.getGuildId(),
-				channel.getRoleIds()
-		);
-	}
+	// ----------- Entity -> DTO -----------
+	@Mapping(target = "guildId", source = "guild.id")
+	@Mapping(target = "rolesWithAccessIds", source = "roleIds") // getRoleIds() fournit les IDs
+	ChannelDTO toDTO(Channel channel);
 
-	// DTO -> Entity
-	public static Channel toEntity(ChannelCreateDTO dto, Guild guild) {
-		return Channel.builder()
-				.id(dto.id())
-				.name(dto.name())
-				.type(dto.type())
-				.guild(guild)
-				.build();
-	}
+	// ----------- CreateDTO + Guild -> Entity -----------
+	@Mapping(target = "id", source = "dto.id")
+	@Mapping(target = "name", source = "dto.name")
+	@Mapping(target = "type", source = "dto.type")
+	@Mapping(target = "guild", source = "guild")
+	@Mapping(target = "rolesWithAccess", ignore = true)
+	Channel toEntity(ChannelCreateDTO dto, Guild guild);
 
-	public static void updateEntity(Channel channel, ChannelUpdateDTO dto, Guild guild) {
-		channel.setName(dto.name());
-		channel.setType(dto.type());
-		channel.setGuild(guild);
-	}
+	// ----------- Update entity from UpdateDTO + Guild -----------
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "name", source = "dto.name")
+	@Mapping(target = "type", source = "dto.type")
+	@Mapping(target = "guild", source = "guild")
+	@Mapping(target = "guildId", ignore = true)
+	@Mapping(target = "rolesWithAccess", ignore = true)
+	void updateEntity(@MappingTarget Channel channel, ChannelUpdateDTO dto, Guild guild);
 }

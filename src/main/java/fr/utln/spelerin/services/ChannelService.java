@@ -22,12 +22,15 @@ import java.util.Optional;
 @Transactional
 public class ChannelService {
 
+	private final ChannelMapper channelMapper;
+
 	private final ChannelRepository channelRepository;
 	private final GuildRepository guildRepository;
 	private final RoleRepository roleRepository;
 
 	@Inject
-	public ChannelService(ChannelRepository channelRepository, GuildRepository guildRepository, RoleRepository roleRepository) {
+	public ChannelService(ChannelMapper channelMapper, ChannelRepository channelRepository, GuildRepository guildRepository, RoleRepository roleRepository) {
+		this.channelMapper = channelMapper;
 		this.channelRepository = channelRepository;
 		this.guildRepository = guildRepository;
 		this.roleRepository = roleRepository;
@@ -36,13 +39,13 @@ public class ChannelService {
 	public List<ChannelDTO> getAllChannels() {
 		return channelRepository.listAll()
 				.stream()
-				.map(ChannelMapper::toDTO)
+				.map(channelMapper::toDTO)
 				.toList();
 	}
 
 	public Optional<ChannelDTO> getChannelById(Long id) {
 		return channelRepository.findByIdOptional(id)
-				.map(ChannelMapper::toDTO);
+				.map(channelMapper::toDTO);
 	}
 
 	public ChannelDTO createChannel(ChannelCreateDTO dto) {
@@ -51,9 +54,9 @@ public class ChannelService {
 			throw new IllegalArgumentException("Guild not found with ID: " + dto.guildId());
 		}
 
-		Channel channel = ChannelMapper.toEntity(dto, guild);
+		Channel channel = channelMapper.toEntity(dto, guild);
 		channelRepository.persist(channel);
-		return ChannelMapper.toDTO(channel);
+		return channelMapper.toDTO(channel);
 	}
 
 	public ChannelDTO updateChannel(Long id, ChannelUpdateDTO dto) {
@@ -67,10 +70,10 @@ public class ChannelService {
 			throw new IllegalArgumentException("Guild not found with ID: " + dto.guildId());
 		}
 
-		ChannelMapper.updateEntity(channel, dto, guild);
+		channelMapper.updateEntity(channel, dto, guild);
 		// Pas besoin d'appeler persist() explicite ici car on est dans une transaction (@Transactional)
 		// et l'entité est "attachée" (managed).
-		return ChannelMapper.toDTO(channel);
+		return channelMapper.toDTO(channel);
 	}
 
 	public boolean deleteChannel(Long id) {
@@ -89,7 +92,7 @@ public class ChannelService {
 		}
 
 		channel.addRoleWithAccess(role);
-		return ChannelMapper.toDTO(channel);
+		return channelMapper.toDTO(channel);
 	}
 
 	public ChannelDTO removeRoleFromChannel(Long channelId, Long roleId) {
@@ -104,6 +107,6 @@ public class ChannelService {
 		}
 
 		channel.removeRoleWithAccess(role);
-		return ChannelMapper.toDTO(channel);
+		return channelMapper.toDTO(channel);
 	}
 }

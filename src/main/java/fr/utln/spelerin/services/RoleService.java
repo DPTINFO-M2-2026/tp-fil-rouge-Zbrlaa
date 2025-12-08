@@ -24,13 +24,16 @@ import java.util.Optional;
 @Transactional
 public class RoleService {
 
+	private final RoleMapper roleMapper;
+
 	private final RoleRepository roleRepository;
 	private final GuildRepository guildRepository;
 	private final UserRepository userRepository;
 	private final ChannelRepository channelRepository;
 
 	@Inject
-	public RoleService(RoleRepository roleRepository, GuildRepository guildRepository, UserRepository userRepository, ChannelRepository channelRepository) {
+	public RoleService(RoleMapper roleMapper, RoleRepository roleRepository, GuildRepository guildRepository, UserRepository userRepository, ChannelRepository channelRepository) {
+		this.roleMapper = roleMapper;
 		this.roleRepository = roleRepository;
 		this.guildRepository = guildRepository;
 		this.userRepository = userRepository;
@@ -38,11 +41,11 @@ public class RoleService {
 	}
 
 	public List<RoleDTO> getAllRoles() {
-		return roleRepository.listAll().stream().map(RoleMapper::toDTO).toList();
+		return roleRepository.listAll().stream().map(roleMapper::toDTO).toList();
 	}
 
 	public Optional<RoleDTO> getRoleById(Long id) {
-		return roleRepository.findByIdOptional(id).map(RoleMapper::toDTO);
+		return roleRepository.findByIdOptional(id).map(roleMapper::toDTO);
 	}
 
 	public RoleDTO createRole(RoleCreateDTO dto) {
@@ -50,9 +53,9 @@ public class RoleService {
 		if (guild == null) {
 			throw new NoSuchElementException("Guild not found: " + dto.guildId());
 		}
-		Role role = RoleMapper.toEntity(dto, guild);
+		Role role = roleMapper.toEntity(dto, guild);
 		roleRepository.persist(role);
-		return RoleMapper.toDTO(role);
+		return roleMapper.toDTO(role);
 	}
 
 	public RoleDTO updateRole(Long id, RoleUpdateDTO dto) {
@@ -62,8 +65,8 @@ public class RoleService {
 		Guild guild = guildRepository.findById(dto.guildId());
 		if (guild == null) throw new IllegalArgumentException("Guild not found: " + dto.guildId());
 
-		RoleMapper.updateEntity(role, dto, guild);
-		return RoleMapper.toDTO(role);
+		roleMapper.updateEntity(role, dto, guild);
+		return roleMapper.toDTO(role);
 	}
 
 	public boolean deleteRole(Long id) {
@@ -78,7 +81,7 @@ public class RoleService {
 		if (user == null) throw new NoSuchElementException("User not found: " + userId);
 
 		role.addUser(user);
-		return RoleMapper.toDTO(role);
+		return roleMapper.toDTO(role);
 	}
 
 	public RoleDTO removeUserFromRole(Long roleId, Long userId) {
@@ -89,7 +92,7 @@ public class RoleService {
 		if (user == null) throw new NoSuchElementException("User not found: " + userId);
 
 		role.removeUser(user);
-		return RoleMapper.toDTO(role);
+		return roleMapper.toDTO(role);
 	}
 
 	public RoleDTO addChannelToRole(Long roleId, Long channelId) {
@@ -100,7 +103,7 @@ public class RoleService {
 		if (channel == null) throw new NoSuchElementException("Channel not found: " + channelId);
 
 		role.addAccessibleChannel(channel);
-		return RoleMapper.toDTO(role);
+		return roleMapper.toDTO(role);
 	}
 
 	public RoleDTO removeChannelFromRole(Long roleId, Long channelId) {
@@ -111,6 +114,6 @@ public class RoleService {
 		if (channel == null) throw new NoSuchElementException("Channel not found: " + channelId);
 
 		role.removeAccessibleChannel(channel);
-		return RoleMapper.toDTO(role);
+		return roleMapper.toDTO(role);
 	}
 }

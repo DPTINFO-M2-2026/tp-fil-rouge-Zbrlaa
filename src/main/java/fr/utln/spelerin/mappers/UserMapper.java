@@ -4,31 +4,31 @@ import fr.utln.spelerin.dto.UserDTO;
 import fr.utln.spelerin.dto.createdto.UserCreateDTO;
 import fr.utln.spelerin.dto.updatedto.UserUpdateDTO;
 import fr.utln.spelerin.entities.User;
+import org.mapstruct.*;
 
+@Mapper(componentModel = "cdi")
+public interface UserMapper {
 
-public class UserMapper {
-	// Entity -> DTO
-	public static UserDTO toDTO(User user) {
-		return new UserDTO(
-				user.getId(),
-				user.getUsername(),
-				user.getDisplayName(),
-				user.getGuildIds(),
-				user.getRoleIds()
-		);
-	}
+	// ----------- Entity -> DTO -----------
+	@Mapping(target = "guildIds", source = "guildIds")
+	@Mapping(target = "roleIds", source = "roleIds")
+	UserDTO toDTO(User user);
 
-	// DTO -> Entity
-	public static User toEntity(UserCreateDTO dto) {
-		return User.builder()
-				.id(dto.id())
-				.username(dto.username())
-				.displayName(dto.displayName())
-				.build();
-	}
+	// ----------- CreateDTO -> Entity -----------
+	@Mapping(target = "id", source = "dto.id")
+	@Mapping(target = "username", source = "dto.username")
+	@Mapping(target = "displayName", source = "dto.displayName")
+	@Mapping(target = "guilds", ignore = true)
+	@Mapping(target = "roles", ignore = true)
+	User toEntity(UserCreateDTO dto);
 
-	public static void updateEntity(User user, UserUpdateDTO dto) {
-		user.setUsername(dto.username());
-		user.setDisplayName(dto.displayName());
-	}
+	// ----------- Update entity from UpdateDTO -----------
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "username", source = "dto.username")
+	@Mapping(target = "displayName", source = "dto.displayName")
+	@Mapping(target = "guilds", ignore = true)
+	@Mapping(target = "roles", ignore = true)
+	@Mapping(target = "guildIds", ignore = true)
+	@Mapping(target = "roleIds", ignore = true)
+	void updateEntity(@MappingTarget User user, UserUpdateDTO dto);
 }

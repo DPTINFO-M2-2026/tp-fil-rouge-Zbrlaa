@@ -22,12 +22,15 @@ import java.util.Optional;
 @Transactional
 public class UserService {
 
+	private final UserMapper userMapper;
+
 	private final UserRepository userRepository;
 	private final GuildRepository guildRepository;
 	private final RoleRepository roleRepository;
 
 	@Inject
-	public UserService(UserRepository userRepository, GuildRepository guildRepository, RoleRepository roleRepository) {
+	public UserService(UserMapper userMapper ,UserRepository userRepository, GuildRepository guildRepository, RoleRepository roleRepository) {
+		this.userMapper = userMapper;
 		this.userRepository = userRepository;
 		this.guildRepository = guildRepository;
 		this.roleRepository = roleRepository;
@@ -35,19 +38,19 @@ public class UserService {
 
 	public List<UserDTO> getAllUsers() {
 		return userRepository.listAll().stream()
-				.map(UserMapper::toDTO)
+				.map(userMapper::toDTO)
 				.toList();
 	}
 
 	public Optional<UserDTO> getUserById(Long id) {
 		return userRepository.findByIdOptional(id)
-				.map(UserMapper::toDTO);
+				.map(userMapper::toDTO);
 	}
 
 	public UserDTO createUser(UserCreateDTO dto) {
-		User user = UserMapper.toEntity(dto);
+		User user = userMapper.toEntity(dto);
 		userRepository.persist(user);
-		return UserMapper.toDTO(user);
+		return userMapper.toDTO(user);
 	}
 
 	public UserDTO updateUser(Long id, UserUpdateDTO dto) {
@@ -55,8 +58,8 @@ public class UserService {
 		if (user == null) {
 			throw new NoSuchElementException("User not found with ID: " + id);
 		}
-		UserMapper.updateEntity(user, dto);
-		return UserMapper.toDTO(user);
+		userMapper.updateEntity(user, dto);
+		return userMapper.toDTO(user);
 	}
 
 	public boolean deleteUser(Long id) {
@@ -72,7 +75,7 @@ public class UserService {
 		if (guild == null) throw new NoSuchElementException("Guild not found: " + guildId);
 
 		user.addGuild(guild);
-		return UserMapper.toDTO(user);
+		return userMapper.toDTO(user);
 	}
 
 	public UserDTO removeGuildFromUser(Long userId, Long guildId) {
@@ -83,7 +86,7 @@ public class UserService {
 		if (guild == null) throw new NoSuchElementException("Guild not found: " + guildId);
 
 		user.removeGuild(guild);
-		return UserMapper.toDTO(user);
+		return userMapper.toDTO(user);
 	}
 
 	public UserDTO addRoleToUser(Long userId, Long roleId) {
@@ -94,7 +97,7 @@ public class UserService {
 		if (role == null) throw new NoSuchElementException("Role not found: " + roleId);
 
 		user.addRole(role);
-		return UserMapper.toDTO(user);
+		return userMapper.toDTO(user);
 	}
 
 	public UserDTO removeRoleFromUser(Long userId, Long roleId) {
@@ -105,6 +108,6 @@ public class UserService {
 		if (role == null) throw new NoSuchElementException("Role not found: " + roleId);
 
 		user.removeRole(role);
-		return UserMapper.toDTO(user);
+		return userMapper.toDTO(user);
 	}
 }

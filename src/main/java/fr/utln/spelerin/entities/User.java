@@ -3,7 +3,6 @@ package fr.utln.spelerin.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -31,10 +30,6 @@ public class User {
 	@ToString.Include
 	private String displayName;
 
-	@Column(name = "joined_at", nullable = false)
-	@ToString.Include
-	private Instant joinedAt;
-
 	@Builder.Default
 	@ManyToMany(mappedBy = "users", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Set<Guild> guilds = new HashSet<>();
@@ -47,15 +42,6 @@ public class User {
 		inverseJoinColumns = @JoinColumn(name = "role_id")
 	)
 	private Set<Role> roles = new HashSet<>();
-
-
-	@PrePersist
-	public void prePersist(){
-		if (joinedAt == null) {
-			joinedAt = Instant.now();
-		}
-	}
-
 
 	public void addGuild(Guild guild) {
 		if (guild == null) return;

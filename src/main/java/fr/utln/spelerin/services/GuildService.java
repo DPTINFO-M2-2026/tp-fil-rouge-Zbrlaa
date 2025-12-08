@@ -24,13 +24,16 @@ import java.util.Optional;
 @Transactional
 public class GuildService {
 
+	private final GuildMapper guildMapper;
+
 	private final GuildRepository guildRepository;
 	private final UserRepository userRepository;
 	private final RoleRepository roleRepository;
 	private final ChannelRepository channelRepository;
 
 	@Inject
-	public GuildService(GuildRepository guildRepository, UserRepository userRepository, RoleRepository roleRepository, ChannelRepository channelRepository) {
+	public GuildService(GuildMapper guildMapper, GuildRepository guildRepository, UserRepository userRepository, RoleRepository roleRepository, ChannelRepository channelRepository) {
+		this.guildMapper = guildMapper;
 		this.guildRepository = guildRepository;
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
@@ -38,24 +41,24 @@ public class GuildService {
 	}
 
 	public List<GuildDTO> getAllGuilds() {
-		return guildRepository.listAll().stream().map(GuildMapper::toDTO).toList();
+		return guildRepository.listAll().stream().map(guildMapper::toDTO).toList();
 	}
 
 	public Optional<GuildDTO> getGuildById(Long id) {
-		return guildRepository.findByIdOptional(id).map(GuildMapper::toDTO);
+		return guildRepository.findByIdOptional(id).map(guildMapper::toDTO);
 	}
 
 	public GuildDTO createGuild(GuildCreateDTO dto) {
-		Guild guild = GuildMapper.toEntity(dto);
+		Guild guild = guildMapper.toEntity(dto);
 		guildRepository.persist(guild);
-		return GuildMapper.toDTO(guild);
+		return guildMapper.toDTO(guild);
 	}
 
 	public GuildDTO updateGuild(Long id, GuildUpdateDTO dto) {
 		Guild guild = guildRepository.findById(id);
 		if (guild == null) throw new NoSuchElementException("Guild not found: " + id);
-		GuildMapper.updateEntity(guild, dto);
-		return GuildMapper.toDTO(guild);
+		guildMapper.updateEntity(guild, dto);
+		return guildMapper.toDTO(guild);
 	}
 
 	public boolean deleteGuild(Long id) {
@@ -70,7 +73,7 @@ public class GuildService {
 		if (user == null) throw new NoSuchElementException("User not found: " + userId);
 
 		guild.addUser(user);
-		return GuildMapper.toDTO(guild);
+		return guildMapper.toDTO(guild);
 	}
 
 	public GuildDTO removeUserFromGuild(Long guildId, Long userId) {
@@ -81,7 +84,7 @@ public class GuildService {
 		if (user == null) throw new NoSuchElementException("User not found: " + userId);
 
 		guild.removeUser(user);
-		return GuildMapper.toDTO(guild);
+		return guildMapper.toDTO(guild);
 	}
 
 	public GuildDTO addRoleToGuild(Long guildId, Long roleId) {
@@ -92,7 +95,7 @@ public class GuildService {
 		if (role == null) throw new NoSuchElementException("Role not found: " + roleId);
 
 		guild.addRole(role);
-		return GuildMapper.toDTO(guild);
+		return guildMapper.toDTO(guild);
 	}
 
 	public GuildDTO removeRoleFromGuild(Long guildId, Long roleId) {
@@ -103,7 +106,7 @@ public class GuildService {
 		if (role == null) throw new NoSuchElementException("Role not found: " + roleId);
 
 		guild.removeRole(role);
-		return GuildMapper.toDTO(guild);
+		return guildMapper.toDTO(guild);
 	}
 
 	public GuildDTO addChannelToGuild(Long guildId, Long channelId) {
@@ -114,7 +117,7 @@ public class GuildService {
 		if (channel == null) throw new NoSuchElementException("Channel not found: " + channelId);
 
 		guild.addChannel(channel);
-		return GuildMapper.toDTO(guild);
+		return guildMapper.toDTO(guild);
 	}
 
 	public GuildDTO removeChannelFromGuild(Long guildId, Long channelId) {
@@ -125,6 +128,6 @@ public class GuildService {
 		if (channel == null) throw new NoSuchElementException("Channel not found: " + channelId);
 
 		guild.removeChannel(channel);
-		return GuildMapper.toDTO(guild);
+		return guildMapper.toDTO(guild);
 	}
 }
