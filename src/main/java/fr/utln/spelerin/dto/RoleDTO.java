@@ -4,10 +4,10 @@ import java.util.Set;
 
 
 public record RoleDTO(
-	String id,
+	long id,
 	String name,
-	Long permissions,
+	long permissions,
 	String guildId,
-	Set<String> userIds,
-	Set<String> accessibleChannelIds
+	Set<Long> userIds,
+	Set<Long> accessibleChannelIds
 ){}

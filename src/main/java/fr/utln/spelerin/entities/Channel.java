@@ -28,7 +28,7 @@ public class Channel {
 
 	@Column(nullable = false)
 	@ToString.Include
-	private String type;
+	private int type;
 
 	@ManyToOne
 	@JoinColumn(name = "guild_id", nullable = false)
