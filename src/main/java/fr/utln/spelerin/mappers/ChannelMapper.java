@@ -12,7 +12,7 @@ public interface ChannelMapper {
 
 	// ----------- Entity -> DTO -----------
 	@Mapping(target = "guildId", source = "guild.id")
-	@Mapping(target = "rolesWithAccessIds", source = "roleIds") // getRoleIds() fournit les IDs
+	@Mapping(target = "rolesWithAccessIds", source = "roleIds")
 	ChannelDTO toDTO(Channel channel);
 
 	// ----------- CreateDTO + Guild -> Entity -----------

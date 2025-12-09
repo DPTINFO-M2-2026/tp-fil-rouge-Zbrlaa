@@ -24,6 +24,7 @@ public interface UserMapper {
 
 	// ----------- Update entity from UpdateDTO -----------
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "username", source = "dto.username")
 	@Mapping(target = "displayName", source = "dto.displayName")
 	@Mapping(target = "guilds", ignore = true)

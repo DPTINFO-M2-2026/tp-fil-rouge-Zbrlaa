@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -91,7 +90,6 @@ public class Guild {
 	public Set<Long> getUserIds() {
 		return users.stream()
 				.map(User::getId)
-				.filter(Objects::nonNull)
 				.collect(Collectors.toUnmodifiableSet());
 	}
 
@@ -99,7 +97,6 @@ public class Guild {
 	public Set<Long> getRoleIds() {
 		return roles.stream()
 				.map(Role::getId)
-				.filter(Objects::nonNull)
 				.collect(Collectors.toUnmodifiableSet());
 	}
 
@@ -107,7 +104,6 @@ public class Guild {
 	public Set<Long> getChannelIds() {
 		return channels.stream()
 				.map(Channel::getId)
-				.filter(Objects::nonNull)
 				.collect(Collectors.toUnmodifiableSet());
 	}
 }

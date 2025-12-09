@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -61,14 +60,13 @@ public class Channel {
 
 	@ToString.Include(name = "guildId")
 	public long getGuildId() {
-		return guild != null ? guild.getId() : null;
+		return guild != null ? guild.getId() : 0L;
 	}
 
 	@ToString.Include(name = "roleIds")
 	public Set<Long> getRoleIds() {
 		return rolesWithAccess.stream()
 			.map(Role::getId)
-			.filter(Objects::nonNull)
 			.collect(Collectors.toUnmodifiableSet());
 	}
 }
