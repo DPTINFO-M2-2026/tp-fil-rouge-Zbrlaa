@@ -11,7 +11,7 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import java.util.function.Supplier; // Pour passer la méthode du service
+import java.util.function.Supplier;
 
 @Path("/llm")
 @Produces(MediaType.APPLICATION_JSON)
@@ -30,7 +30,6 @@ public class LLMResource {
     @Path("/teach")
     @Operation(summary = "Expliquer un concept")
     public Response teach(@Valid LLMRequest request) {
-        // On passe une lambda qui appelle le service
         return handleLlmCall(() -> llmService.teach(request.prompt()));
     }
 
