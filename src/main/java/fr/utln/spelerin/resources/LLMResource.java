@@ -13,7 +13,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.function.Supplier;
 
-@Path("/llm")
+@Path("/v1/llm")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "LLM Tools", description = "Outils IA avec gestion d'erreurs avancée")

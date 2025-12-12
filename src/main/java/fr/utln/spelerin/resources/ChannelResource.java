@@ -24,7 +24,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 
 
-@Path("/channels")
+@Path("/v1/channels")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Channels", description = "Manages Discord channels (text, voice, etc.) and their role-based access permissions.")

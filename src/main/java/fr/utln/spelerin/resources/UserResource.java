@@ -23,7 +23,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 
 
-@Path("/users")
+@Path("/v1/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Users", description = "Manages Discord users and their relations with guilds and roles.")

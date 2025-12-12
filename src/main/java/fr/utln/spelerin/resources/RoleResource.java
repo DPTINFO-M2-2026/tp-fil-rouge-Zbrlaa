@@ -23,7 +23,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 
 
-@Path("/roles")
+@Path("/v1/roles")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Roles", description = "Manages Discord roles, permissions, and their relations with users and channels.")
