@@ -48,12 +48,24 @@ public class ChannelService {
 				.map(channelMapper::toDTO);
 	}
 
+	//Upsert
 	public ChannelDTO createChannel(ChannelCreateDTO dto) {
+		Channel existing = channelRepository.findById(dto.id());
+
 		Guild guild = guildRepository.findById(dto.guildId());
 		if (guild == null) {
 			throw new IllegalArgumentException("Guild not found with ID: " + dto.guildId());
 		}
 
+		if (existing != null) {
+			existing.setName(dto.name());
+			existing.setType(dto.type());
+			if (existing.getGuildId() != dto.guildId()) {
+				existing.setGuild(guild); 
+			}
+			return channelMapper.toDTO(existing);
+		}
+		
 		Channel channel = channelMapper.toEntity(dto, guild);
 		channelRepository.persist(channel);
 		return channelMapper.toDTO(channel);

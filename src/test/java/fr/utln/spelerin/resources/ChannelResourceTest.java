@@ -33,7 +33,7 @@ class ChannelResourceTest {
 				.contentType(ContentType.JSON)
 				.body(guildDto)
 			.when()
-				.post("/guilds")
+				.post("/v1/guilds")
 			.then()
 				.statusCode(201)
 				.extract().as(GuildDTO.class);
@@ -53,7 +53,7 @@ class ChannelResourceTest {
 				.contentType(ContentType.JSON)
 				.body(channelDto)
 			.when()
-				.post("/channels")
+				.post("/v1/channels")
 			.then()
 				.statusCode(201)
 				.extract().as(ChannelDTO.class);
@@ -68,7 +68,7 @@ class ChannelResourceTest {
 				.contentType(ContentType.JSON)
 				.body(roleDto)
 			.when()
-				.post("/roles")
+				.post("/v1/roles")
 			.then()
 				.statusCode(201)
 				.extract().as(RoleDTO.class);
@@ -77,31 +77,31 @@ class ChannelResourceTest {
 		assertEquals(ROLE_SNOWFLAKE, role.id());
 
 		// ---------- ADD RELATION ----------
-		given().when().put("/channels/{channelId}/roles/{roleId}", channel.id(), role.id())
+		given().when().put("/v1/channels/{channelId}/roles/{roleId}", channel.id(), role.id())
 				.then().statusCode(200);
 
 		// ---------- VERIFY RELATION ----------
 		ChannelDTO channelWithRelations = given()
-				.when().get("/channels/{id}", channel.id())
+				.when().get("/v1/channels/{id}", channel.id())
 				.then().statusCode(200)
 				.extract().as(ChannelDTO.class);
 		assertTrue(channelWithRelations.rolesWithAccessIds().contains(role.id()));
 
 		// ---------- REMOVE RELATION ----------
-		given().when().delete("/channels/{channelId}/roles/{roleId}", channel.id(), role.id())
+		given().when().delete("/v1/channels/{channelId}/roles/{roleId}", channel.id(), role.id())
 				.then().statusCode(200);
 
 		// ---------- VERIFY RELATION REMOVED ----------
 		ChannelDTO updated = given()
-				.when().get("/channels/{id}", channel.id())
+				.when().get("/v1/channels/{id}", channel.id())
 				.then().statusCode(200)
 				.extract().as(ChannelDTO.class);
 		assertFalse(updated.rolesWithAccessIds().contains(role.id()));
 
 		// ---------- DELETE ----------
-		given().when().delete("/channels/{id}", channel.id())
+		given().when().delete("/v1/channels/{id}", channel.id())
 				.then().statusCode(204);
-		given().when().get("/channels/{id}", channel.id())
+		given().when().get("/v1/channels/{id}", channel.id())
 				.then().statusCode(404);
 	}
 }

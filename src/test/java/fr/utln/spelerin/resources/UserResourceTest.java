@@ -34,7 +34,7 @@ class UserResourceTest {
 				.contentType(ContentType.JSON)
 				.body(userDto)
 			.when()
-				.post("/users")
+				.post("/v1/users")
 			.then()
 				.statusCode(201)
 				.extract().as(UserDTO.class);
@@ -47,7 +47,7 @@ class UserResourceTest {
 				.contentType(ContentType.JSON)
 				.body(guildDto)
 			.when()
-				.post("/guilds")
+				.post("/v1/guilds")
 			.then()
 				.statusCode(201)
 				.extract().as(GuildDTO.class);
@@ -60,44 +60,44 @@ class UserResourceTest {
 				.contentType(ContentType.JSON)
 				.body(roleDto)
 			.when()
-				.post("/roles")
+				.post("/v1/roles")
 			.then()
 				.statusCode(201)
 				.extract().as(RoleDTO.class);
 		assertEquals(ROLE_SNOWFLAKE, role.id());
 
 		// ---------- ADD RELATIONS ----------
-		given().when().put("/users/{userId}/guilds/{guildId}", user.id(), guild.id())
+		given().when().put("/v1/users/{userId}/guilds/{guildId}", user.id(), guild.id())
 				.then().statusCode(200);
-		given().when().put("/users/{userId}/roles/{roleId}", user.id(), role.id())
+		given().when().put("/v1/users/{userId}/roles/{roleId}", user.id(), role.id())
 				.then().statusCode(200);
 
 		// ---------- VERIFY RELATIONS ----------
 		UserDTO userWithRelations = given()
-				.when().get("/users/{id}", user.id())
+				.when().get("/v1/users/{id}", user.id())
 				.then().statusCode(200)
 				.extract().as(UserDTO.class);
 		assertTrue(userWithRelations.guildIds().contains(guild.id()));
 		assertTrue(userWithRelations.roleIds().contains(role.id()));
 
 		// ---------- REMOVE RELATIONS ----------
-		given().when().delete("/users/{userId}/guilds/{guildId}", user.id(), guild.id())
+		given().when().delete("/v1/users/{userId}/guilds/{guildId}", user.id(), guild.id())
 				.then().statusCode(200);
-		given().when().delete("/users/{userId}/roles/{roleId}", user.id(), role.id())
+		given().when().delete("/v1/users/{userId}/roles/{roleId}", user.id(), role.id())
 				.then().statusCode(200);
 
 		// ---------- VERIFY RELATIONS REMOVED ----------
 		UserDTO updated = given()
-				.when().get("/users/{id}", user.id())
+				.when().get("/v1/users/{id}", user.id())
 				.then().statusCode(200)
 				.extract().as(UserDTO.class);
 		assertFalse(updated.guildIds().contains(guild.id()));
 		assertFalse(updated.roleIds().contains(role.id()));
 
 		// ---------- DELETE ----------
-		given().when().delete("/users/{id}", user.id())
+		given().when().delete("/v1/users/{id}", user.id())
 				.then().statusCode(204);
-		given().when().get("/users/{id}", user.id())
+		given().when().get("/v1/users/{id}", user.id())
 				.then().statusCode(404);
 	}
 }

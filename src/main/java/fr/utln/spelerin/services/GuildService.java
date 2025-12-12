@@ -48,7 +48,18 @@ public class GuildService {
 		return guildRepository.findByIdOptional(id).map(guildMapper::toDTO);
 	}
 
+	//Upsert
 	public GuildDTO createGuild(GuildCreateDTO dto) {
+		// [MODIFICATION: Début de la logique Upsert]
+		Guild existing = guildRepository.findById(dto.id());
+		if (existing != null) {
+			// MERGE: Update existing fields
+			existing.setName(dto.name());
+			return guildMapper.toDTO(existing);
+		}
+		// [MODIFICATION: Fin de la logique Upsert]
+
+		// CREATE: New entity
 		Guild guild = guildMapper.toEntity(dto);
 		guildRepository.persist(guild);
 		return guildMapper.toDTO(guild);

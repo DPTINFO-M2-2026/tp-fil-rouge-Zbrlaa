@@ -37,7 +37,7 @@ class RoleResourceTest {
 				.contentType(ContentType.JSON)
 				.body(guildDto)
 			.when()
-				.post("/guilds")
+				.post("/v1/guilds")
 			.then()
 				.statusCode(201)
 				.extract().as(GuildDTO.class);
@@ -50,7 +50,7 @@ class RoleResourceTest {
 				.contentType(ContentType.JSON)
 				.body(roleDto)
 			.when()
-				.post("/roles")
+				.post("/v1/roles")
 			.then()
 				.statusCode(201)
 				.extract().as(RoleDTO.class);
@@ -63,7 +63,7 @@ class RoleResourceTest {
 				.contentType(ContentType.JSON)
 				.body(userDto)
 			.when()
-				.post("/users")
+				.post("/v1/users")
 			.then()
 				.statusCode(201)
 				.extract().as(UserDTO.class);
@@ -76,44 +76,44 @@ class RoleResourceTest {
 				.contentType(ContentType.JSON)
 				.body(channelDto)
 			.when()
-				.post("/channels")
+				.post("/v1/channels")
 			.then()
 				.statusCode(201)
 				.extract().as(ChannelDTO.class);
 		assertEquals(CHANNEL_SNOWFLAKE, channel.id());
 
 		// ---------- ADD RELATIONS ----------
-		given().when().put("/roles/{roleId}/users/{userId}", role.id(), user.id())
+		given().when().put("/v1/roles/{roleId}/users/{userId}", role.id(), user.id())
 				.then().statusCode(200);
-		given().when().put("/roles/{roleId}/channels/{channelId}", role.id(), channel.id())
+		given().when().put("/v1/roles/{roleId}/channels/{channelId}", role.id(), channel.id())
 				.then().statusCode(200);
 
 		// ---------- VERIFY RELATIONS ----------
 		RoleDTO roleWithRelations = given()
-				.when().get("/roles/{id}", role.id())
+				.when().get("/v1/roles/{id}", role.id())
 				.then().statusCode(200)
 				.extract().as(RoleDTO.class);
 		assertTrue(roleWithRelations.userIds().contains(user.id()));
 		assertTrue(roleWithRelations.accessibleChannelIds().contains(channel.id()));
 
 		// ---------- REMOVE RELATIONS ----------
-		given().when().delete("/roles/{roleId}/users/{userId}", role.id(), user.id())
+		given().when().delete("/v1/roles/{roleId}/users/{userId}", role.id(), user.id())
 				.then().statusCode(200);
-		given().when().delete("/roles/{roleId}/channels/{channelId}", role.id(), channel.id())
+		given().when().delete("/v1/roles/{roleId}/channels/{channelId}", role.id(), channel.id())
 				.then().statusCode(200);
 
 		// ---------- VERIFY RELATIONS REMOVED ----------
 		RoleDTO updated = given()
-				.when().get("/roles/{id}", role.id())
+				.when().get("/v1/roles/{id}", role.id())
 				.then().statusCode(200)
 				.extract().as(RoleDTO.class);
 		assertFalse(updated.userIds().contains(user.id()));
 		assertFalse(updated.accessibleChannelIds().contains(channel.id()));
 
 		// ---------- DELETE ----------
-		given().when().delete("/roles/{id}", role.id())
+		given().when().delete("/v1/roles/{id}", role.id())
 				.then().statusCode(204);
-		given().when().get("/roles/{id}", role.id())
+		given().when().get("/v1/roles/{id}", role.id())
 				.then().statusCode(404);
 	}
 }

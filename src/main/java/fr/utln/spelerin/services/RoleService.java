@@ -48,11 +48,29 @@ public class RoleService {
 		return roleRepository.findByIdOptional(id).map(roleMapper::toDTO);
 	}
 
+	//Upsert
 	public RoleDTO createRole(RoleCreateDTO dto) {
+		Role existing = roleRepository.findById(dto.id());
+
 		Guild guild = guildRepository.findById(dto.guildId());
 		if (guild == null) {
 			throw new NoSuchElementException("Guild not found: " + dto.guildId());
 		}
+
+		// [MODIFICATION: Début de la logique Upsert]
+		if (existing != null) {
+			// MERGE: Update existing fields
+			existing.setName(dto.name());
+			existing.setPermissions(dto.permissions());
+			// Mise à jour de la guilde parente si elle change
+			if (existing.getGuildId() != dto.guildId()) {
+				existing.setGuild(guild); 
+			}
+			return roleMapper.toDTO(existing);
+		}
+		// [MODIFICATION: Fin de la logique Upsert]
+
+		// CREATE: New entity
 		Role role = roleMapper.toEntity(dto, guild);
 		roleRepository.persist(role);
 		return roleMapper.toDTO(role);

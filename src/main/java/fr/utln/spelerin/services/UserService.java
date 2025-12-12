@@ -47,7 +47,20 @@ public class UserService {
 				.map(userMapper::toDTO);
 	}
 
+	//Upsert
 	public UserDTO createUser(UserCreateDTO dto) {
+		// [MODIFICATION: Début de la logique Upsert]
+		User existing = userRepository.findById(dto.id());
+		if (existing != null) {
+			// MERGE: Update existing fields (ignoring ID, Guilds, and Roles sets)
+			existing.setUsername(dto.username());
+			existing.setDisplayName(dto.displayName());
+			// L'entité est gérée dans la transaction, l'update est implicite.
+			return userMapper.toDTO(existing);
+		}
+		// [MODIFICATION: Fin de la logique Upsert]
+
+		// CREATE: New entity
 		User user = userMapper.toEntity(dto);
 		userRepository.persist(user);
 		return userMapper.toDTO(user);

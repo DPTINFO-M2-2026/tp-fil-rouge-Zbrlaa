@@ -38,7 +38,7 @@ class GuildResourceTest {
 				.contentType(ContentType.JSON)
 				.body(guildDto)
 			.when()
-				.post("/guilds")
+				.post("/v1/guilds")
 			.then()
 				.statusCode(201)
 				.extract().as(GuildDTO.class);
@@ -52,7 +52,7 @@ class GuildResourceTest {
 				.contentType(ContentType.JSON)
 				.body(userDto)
 			.when()
-				.post("/users")
+				.post("/v1/users")
 			.then()
 				.statusCode(201)
 				.extract().as(UserDTO.class);
@@ -66,7 +66,7 @@ class GuildResourceTest {
 				.contentType(ContentType.JSON)
 				.body(roleDto)
 			.when()
-				.post("/roles")
+				.post("/v1/roles")
 			.then()
 				.statusCode(201)
 				.extract().as(RoleDTO.class);
@@ -80,7 +80,7 @@ class GuildResourceTest {
 				.contentType(ContentType.JSON)
 				.body(channelDto)
 			.when()
-				.post("/channels")
+				.post("/v1/channels")
 			.then()
 				.statusCode(201)
 				.extract().as(ChannelDTO.class);
@@ -88,16 +88,16 @@ class GuildResourceTest {
 		assertEquals(CHANNEL_SNOWFLAKE, channel.id());
 
 		// ---------- ADD RELATIONS ----------
-		given().when().put("/guilds/{guildId}/users/{userId}", guild.id(), user.id())
+		given().when().put("/v1/guilds/{guildId}/users/{userId}", guild.id(), user.id())
 				.then().statusCode(200);
-		given().when().put("/guilds/{guildId}/roles/{roleId}", guild.id(), role.id())
+		given().when().put("/v1/guilds/{guildId}/roles/{roleId}", guild.id(), role.id())
 				.then().statusCode(200);
-		given().when().put("/guilds/{guildId}/channels/{channelId}", guild.id(), channel.id())
+		given().when().put("/v1/guilds/{guildId}/channels/{channelId}", guild.id(), channel.id())
 				.then().statusCode(200);
 
 		// ---------- VERIFY RELATIONS ----------
 		GuildDTO guildWithRelations = given()
-				.when().get("/guilds/{id}", guild.id())
+				.when().get("/v1/guilds/{id}", guild.id())
 				.then().statusCode(200)
 				.extract().as(GuildDTO.class);
 
@@ -106,16 +106,16 @@ class GuildResourceTest {
 		assertTrue(guildWithRelations.channelIds().contains(channel.id()));
 
 		// ---------- REMOVE RELATIONS ----------
-		given().when().delete("/guilds/{guildId}/users/{userId}", guild.id(), user.id())
+		given().when().delete("/v1/guilds/{guildId}/users/{userId}", guild.id(), user.id())
 				.then().statusCode(200);
-		given().when().delete("/guilds/{guildId}/roles/{roleId}", guild.id(), role.id())
+		given().when().delete("/v1/guilds/{guildId}/roles/{roleId}", guild.id(), role.id())
 				.then().statusCode(200);
-		given().when().delete("/guilds/{guildId}/channels/{channelId}", guild.id(), channel.id())
+		given().when().delete("/v1/guilds/{guildId}/channels/{channelId}", guild.id(), channel.id())
 				.then().statusCode(200);
 
 		// ---------- VERIFY RELATIONS REMOVED ----------
 		GuildDTO updated = given()
-				.when().get("/guilds/{id}", guild.id())
+				.when().get("/v1/guilds/{id}", guild.id())
 				.then().statusCode(200)
 				.extract().as(GuildDTO.class);
 
@@ -124,10 +124,10 @@ class GuildResourceTest {
 		assertFalse(updated.channelIds().contains(channel.id()));
 
 		// ---------- DELETE ----------
-		given().when().delete("/guilds/{id}", guild.id())
+		given().when().delete("/v1/guilds/{id}", guild.id())
 				.then().statusCode(204);
 
-		given().when().get("/guilds/{id}", guild.id())
+		given().when().get("/v1/guilds/{id}", guild.id())
 				.then().statusCode(404);
 	}
 }
