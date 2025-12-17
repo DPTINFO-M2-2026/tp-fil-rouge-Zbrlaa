@@ -9,5 +9,6 @@ public record RoleDTO(
 	long permissions,
 	long guildId,
 	Set<Long> userIds,
-	Set<Long> accessibleChannelIds
+	Set<Long> accessibleChannelIds,
+	Set<Long> invitationIds
 ){}

@@ -41,6 +41,9 @@ public class Role {
 	@ManyToMany(mappedBy = "rolesWithAccess")
 	private Set<Channel> accessibleChannels = new HashSet<>();
 
+	@Builder.Default
+	@ManyToMany(mappedBy = "invitations")
+	private Set<Invitation> invitations = new HashSet<>();
 
 	public void addUser(User user) {
 		if (user == null) return;
@@ -70,6 +73,20 @@ public class Role {
 		}
 	}
 
+	public void addInvitation(Invitation invitation) {
+		if (invitation == null) return;
+		if (this.invitations.add(invitation)) {
+			invitation.getRoles().add(this);
+		}
+	}
+
+	public void removeInvitation(Invitation invitation) {
+		if (invitation == null) return;
+		if (this.invitations.remove(invitation)) {
+			invitation.getRoles().remove(this);
+		}
+	}
+
 
 	@ToString.Include(name = "guildId")
 	public long getGuildId() {
@@ -87,6 +104,13 @@ public class Role {
 	public Set<Long> getAccessibleChannelIds() {
 		return accessibleChannels.stream()
 			.map(Channel::getId)
+			.collect(Collectors.toUnmodifiableSet());
+	}
+
+	@ToString.Include(name = "invitationIds")
+	public Set<Long> getInvitationIds() {
+		return invitations.stream()
+			.map(Invitation::getId)
 			.collect(Collectors.toUnmodifiableSet());
 	}
 }

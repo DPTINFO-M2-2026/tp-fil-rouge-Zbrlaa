@@ -34,7 +34,7 @@ public class Channel {
 	private Guild guild;
 
 	@Builder.Default
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToMany
 	@JoinTable(
 		name = "channel_roles",
 		joinColumns = @JoinColumn(name = "channel_id"),

@@ -14,6 +14,7 @@ public interface GuildMapper {
 	@Mapping(target = "userIds", source = "userIds")
 	@Mapping(target = "roleIds", source = "roleIds")
 	@Mapping(target = "channelIds", source = "channelIds")
+	@Mapping(target = "invitationIds", source = "invitationIds")
 	GuildDTO toDTO(Guild guild);
 
 
@@ -21,6 +22,7 @@ public interface GuildMapper {
 	@Mapping(target = "users", ignore = true)
 	@Mapping(target = "roles", ignore = true)
 	@Mapping(target = "channels", ignore = true)
+	@Mapping(target = "invitations", ignore = true)
 	Guild toEntity(GuildCreateDTO dto);
 
 
@@ -33,5 +35,7 @@ public interface GuildMapper {
 	@Mapping(target = "userIds", ignore = true)
 	@Mapping(target = "roleIds", ignore = true)
 	@Mapping(target = "channelIds", ignore = true)
+	@Mapping(target = "invitations", ignore = true)
+	@Mapping(target = "invitationIds", ignore = true)
 	void updateEntity(@MappingTarget Guild guild, GuildUpdateDTO dto);
 }

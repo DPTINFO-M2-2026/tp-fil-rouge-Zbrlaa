@@ -42,6 +42,10 @@ public class Guild {
 	@OneToMany(mappedBy = "guild", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Channel> channels = new HashSet<>();
 
+	@Builder.Default
+	@OneToMany(mappedBy = "guild", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Invitation> invitations = new HashSet<>();
+
 
 	public void addUser(User user) {
 		if (user == null) return;
@@ -85,6 +89,20 @@ public class Guild {
 		}
 	}
 
+	public void addInvitation(Invitation invitation) {
+		if (invitation == null) return;
+		if (this.invitations.add(invitation)) {
+			invitation.setGuild(this);
+		}
+	}
+
+	public void removeInvitation(Invitation invitation) {
+		if (invitation == null) return;
+		if (this.invitations.remove(invitation)) {
+			invitation.setGuild(null);
+		}
+	}
+
 
 	@ToString.Include(name = "userIds")
 	public Set<Long> getUserIds() {
@@ -104,6 +122,13 @@ public class Guild {
 	public Set<Long> getChannelIds() {
 		return channels.stream()
 				.map(Channel::getId)
+				.collect(Collectors.toUnmodifiableSet());
+	}
+
+	@ToString.Include(name = "invitationIds")
+	public Set<Long> getInvitationIds() {
+		return invitations.stream()
+				.map(Invitation::getId)
 				.collect(Collectors.toUnmodifiableSet());
 	}
 }

@@ -14,6 +14,7 @@ public interface RoleMapper {
 	@Mapping(target = "guildId", source = "guild.id")
 	@Mapping(target = "userIds", source = "userIds")
 	@Mapping(target = "accessibleChannelIds", source = "accessibleChannelIds")
+	@Mapping(target = "invitationIds", source = "invitationIds")
 	RoleDTO toDTO(Role role);
 
 	// ----------- CreateDTO + Guild -> Entity -----------
@@ -23,6 +24,7 @@ public interface RoleMapper {
 	@Mapping(target = "guild", source = "guild")
 	@Mapping(target = "users", ignore = true)
 	@Mapping(target = "accessibleChannels", ignore = true)
+	@Mapping(target = "invitations", ignore = true)
 	Role toEntity(RoleCreateDTO dto, Guild guild);
 
 	// ----------- Update entity from UpdateDTO + Guild -----------
@@ -35,5 +37,7 @@ public interface RoleMapper {
 	@Mapping(target = "guildId", ignore = true)
 	@Mapping(target = "userIds", ignore = true)
 	@Mapping(target = "accessibleChannelIds", ignore = true)
+	@Mapping(target = "invitations", ignore = true)
+	@Mapping(target = "invitationIds", ignore = true)
 	void updateEntity(@MappingTarget Role role, RoleUpdateDTO dto, Guild guild);
 }

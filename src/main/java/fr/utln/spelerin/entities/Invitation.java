@@ -41,7 +41,9 @@ public class Invitation {
 	
 	public void addRole(Role role) {
 		if (role == null) return;
-		this.roles.add(role);
+		if(this.roles.add(role)) {
+			role.getInvitations().add(this);
+		}
 	}
 
 	public void removeRole(Role role) {

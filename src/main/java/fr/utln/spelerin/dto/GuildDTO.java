@@ -8,5 +8,6 @@ public record GuildDTO(
 	String name,
 	Set<Long> userIds,
 	Set<Long> roleIds,
-	Set<Long> channelIds
+	Set<Long> channelIds,
+	Set<Long> invitationIds
 ){}
