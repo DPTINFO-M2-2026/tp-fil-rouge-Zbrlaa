@@ -1,5 +1,9 @@
 package fr.utln.spelerin.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,21 +25,40 @@ public class Invitation {
 	@ToString.Include
 	private String discordCode;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "role_id", nullable = false)
-	private Role role;
+	@Builder.Default
+	@ManyToMany
+	@JoinTable(
+		name = "invitation_roles",
+		joinColumns = @JoinColumn(name = "invitation_id"),
+		inverseJoinColumns = @JoinColumn(name = "role_id")
+	)
+	private Set<Role> roles = new HashSet<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "guild_id", nullable = false)
 	private Guild guild;
+
+	
+	public void addRole(Role role) {
+		if (role == null) return;
+		this.roles.add(role);
+	}
+
+	public void removeRole(Role role) {
+		if (role == null) return;
+		this.roles.remove(role);
+	}
+
 
 	@ToString.Include(name = "guildId")
 	public long getGuildId() {
 		return guild != null ? guild.getId() : 0L;
 	}
 
-	@ToString.Include(name = "roleId")
-	public long getRoleId() {
-		return role != null ? role.getId() : 0L;
+	@ToString.Include(name = "roleIds")
+	public Set<Long> getRoleIds() {
+		return roles.stream()
+			.map(Role::getId)
+			.collect(Collectors.toUnmodifiableSet());
 	}
 }

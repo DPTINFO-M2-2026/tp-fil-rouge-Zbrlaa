@@ -8,10 +8,6 @@ public record InvitationCreateDTO(
 	@NotBlank(message = "Le code discord est obligatoire.")
 	String discordCode,
 	
-	@NotNull(message = "L'ID du rôle est obligatoire.")
-	@Min(value = 1L, message = "L'ID doit être un nombre positif (Snowflake).")
-	long roleId,
-	
 	@NotNull(message = "L'ID de la guilde est obligatoire.")
 	@Min(value = 1L, message = "L'ID doit être un nombre positif (Snowflake).")
 	long guildId
