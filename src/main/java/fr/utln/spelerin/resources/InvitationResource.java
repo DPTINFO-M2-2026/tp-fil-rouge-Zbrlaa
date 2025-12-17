@@ -1,5 +1,6 @@
 package fr.utln.spelerin.resources;
 
+import fr.utln.spelerin.dto.ChannelDTO;
 import fr.utln.spelerin.dto.InvitationDTO;
 import fr.utln.spelerin.dto.createdto.InvitationCreateDTO;
 import fr.utln.spelerin.dto.updatedto.InvitationUpdateDTO;
@@ -132,5 +133,57 @@ public class InvitationResource {
 	) {
 		return invitationService.deleteInvitation(id) ? Response.noContent().build()
 				: Response.status(Response.Status.NOT_FOUND).build();
+	}
+
+	// --- Role Relations ---
+
+	@PUT
+	@Path("/{invitationId}/roles/{roleId}")
+	@Operation(summary = "Add role access to invitation", description = "Associates a role with this invitation to grant access (bidirectional).")
+	@APIResponses(value = {
+		@APIResponse(
+			responseCode = "200",
+			description = "Role added. Returns the updated invitation.",
+			content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ChannelDTO.class))
+		),
+		@APIResponse(responseCode = "404", description = "Invitation or Role not found")
+	})
+	public Response addRole(
+		@Parameter(description = "ID of the invitation", required = true, example = "987654321098765432")
+		@PathParam("invitationId") Long invitationId, 
+		@Parameter(description = "Snowflake ID of the role to associate", required = true, example = "246813579024681357")
+		@PathParam("roleId") Long roleId
+	) {
+		try {
+			InvitationDTO invitation = invitationService.addRoleToInvitation(invitationId, roleId);
+			return Response.ok(invitation).build();
+		} catch (NoSuchElementException e) {
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+		}
+	}
+
+	@DELETE
+	@Path("/{invitationId}/roles/{roleId}")
+	@Operation(summary = "Remove role access from invitation", description = "Disassociates a role from this invitation, removing access (bidirectional).")
+	@APIResponses(value = {
+		@APIResponse(
+			responseCode = "200",
+			description = "Role removed. Returns the updated invitation.",
+			content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = InvitationDTO.class))
+		),
+		@APIResponse(responseCode = "404", description = "Invitation or Role not found")
+	})
+	public Response removeRole(
+		@Parameter(description = "ID of the invitation", required = true, example = "987654321098765432")
+		@PathParam("invitationId") Long invitationId, 
+		@Parameter(description = "Snowflake ID of the role to disassociate", required = true, example = "246813579024681357")
+		@PathParam("roleId") Long roleId
+	) {
+		try {
+			InvitationDTO invitation = invitationService.removeRoleFromInvitation(invitationId, roleId);
+			return Response.ok(invitation).build();
+		} catch (NoSuchElementException e) {
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+		}
 	}
 }

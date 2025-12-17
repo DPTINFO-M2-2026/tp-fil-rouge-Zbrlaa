@@ -45,13 +45,10 @@ public class InvitationService {
 	}
 
 	public InvitationDTO createInvitation(InvitationCreateDTO dto) {
-		Role role = roleRepository.findById(dto.roleId());
-		if (role == null) throw new NoSuchElementException("Role not found: " + dto.roleId());
-
 		Guild guild = guildRepository.findById(dto.guildId());
 		if (guild == null) throw new NoSuchElementException("Guild not found: " + dto.guildId());
 
-		Invitation invitation = invitationMapper.toEntity(dto, role, guild);
+		Invitation invitation = invitationMapper.toEntity(dto, guild);
 		invitationRepository.persist(invitation);
 		return invitationMapper.toDTO(invitation);
 	}
@@ -60,17 +57,36 @@ public class InvitationService {
 		Invitation invitation = invitationRepository.findById(id);
 		if (invitation == null) throw new NoSuchElementException("Invitation not found: " + id);
 
-		Role role = roleRepository.findById(dto.roleId()) != null ? roleRepository.findById(dto.roleId()) : invitation.getRole();
-		if (role == null) throw new NoSuchElementException("Role not found");
-
 		Guild guild = guildRepository.findById(dto.guildId()) != null ? guildRepository.findById(dto.guildId()) : invitation.getGuild();
 		if (guild == null) throw new NoSuchElementException("Guild not found");
 
-		invitationMapper.updateEntity(invitation, dto, role, guild);
+		invitationMapper.updateEntity(invitation, dto, guild);
 		return invitationMapper.toDTO(invitation);
 	}
 
 	public boolean deleteInvitation(Long id) {
 		return invitationRepository.deleteById(id);
+	}
+
+	public InvitationDTO addRoleToInvitation(Long invitationId, Long roleId) {
+		Invitation invitation = invitationRepository.findById(invitationId);
+		if (invitation == null) throw new NoSuchElementException("Invitation not found: " + invitationId);
+
+		Role role = roleRepository.findById(roleId);
+		if (role == null) throw new NoSuchElementException("Role not found: " + roleId);
+
+		invitation.getRoles().add(role);
+		return invitationMapper.toDTO(invitation);
+	}
+
+	public InvitationDTO removeRoleFromInvitation(Long invitationId, Long roleId) {
+		Invitation invitation = invitationRepository.findById(invitationId);
+		if (invitation == null) throw new NoSuchElementException("Invitation not found: " + invitationId);
+
+		Role role = roleRepository.findById(roleId);
+		if (role == null) throw new NoSuchElementException("Role not found: " + roleId);
+
+		invitation.getRoles().remove(role);
+		return invitationMapper.toDTO(invitation);
 	}
 }
