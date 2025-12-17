@@ -42,7 +42,7 @@ public class Role {
 	private Set<Channel> accessibleChannels = new HashSet<>();
 
 	@Builder.Default
-	@ManyToMany(mappedBy = "invitations")
+	@ManyToMany(mappedBy = "roles")
 	private Set<Invitation> invitations = new HashSet<>();
 
 	public void addUser(User user) {

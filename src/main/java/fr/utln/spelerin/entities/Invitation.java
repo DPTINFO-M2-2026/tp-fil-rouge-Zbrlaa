@@ -48,7 +48,9 @@ public class Invitation {
 
 	public void removeRole(Role role) {
 		if (role == null) return;
-		this.roles.remove(role);
+		if(this.roles.remove(role)) {
+			role.getInvitations().remove(this);
+		}
 	}
 
 
