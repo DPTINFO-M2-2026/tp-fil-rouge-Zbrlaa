@@ -50,17 +50,19 @@ public class GuildService {
 
 	//Upsert
 	public GuildDTO createGuild(GuildCreateDTO dto) {
-		// [MODIFICATION: Début de la logique Upsert]
 		Guild existing = guildRepository.findById(dto.id());
+
+		User owner = userRepository.findById(dto.ownerId());
+		if (owner == null) {
+			throw new IllegalArgumentException("Owner not found with ID: " + dto.ownerId());
+		}
+
 		if (existing != null) {
-			// MERGE: Update existing fields
 			existing.setName(dto.name());
 			return guildMapper.toDTO(existing);
 		}
-		// [MODIFICATION: Fin de la logique Upsert]
 
-		// CREATE: New entity
-		Guild guild = guildMapper.toEntity(dto);
+		Guild guild = guildMapper.toEntity(dto, owner);
 		guildRepository.persist(guild);
 		return guildMapper.toDTO(guild);
 	}
@@ -68,7 +70,13 @@ public class GuildService {
 	public GuildDTO updateGuild(Long id, GuildUpdateDTO dto) {
 		Guild guild = guildRepository.findById(id);
 		if (guild == null) throw new NoSuchElementException("Guild not found: " + id);
-		guildMapper.updateEntity(guild, dto);
+
+		User owner = userRepository.findById(dto.ownerId());
+		if (owner == null) {
+			throw new IllegalArgumentException("Owner not found with ID: " + dto.ownerId());
+		}
+
+		guildMapper.updateEntity(guild, dto, owner);
 		return guildMapper.toDTO(guild);
 	}
 

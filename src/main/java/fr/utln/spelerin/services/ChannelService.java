@@ -83,8 +83,6 @@ public class ChannelService {
 		}
 
 		channelMapper.updateEntity(channel, dto, guild);
-		// Pas besoin d'appeler persist() explicite ici car on est dans une transaction (@Transactional)
-		// et l'entité est "attachée" (managed).
 		return channelMapper.toDTO(channel);
 	}
 

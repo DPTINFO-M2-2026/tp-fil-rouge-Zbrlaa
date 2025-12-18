@@ -8,5 +8,6 @@ public record UserDTO(
 	String username,
 	String displayName,
 	Set<Long> guildIds,
+	Set<Long> ownedGuildIds,
 	Set<Long> roleIds
 ){}

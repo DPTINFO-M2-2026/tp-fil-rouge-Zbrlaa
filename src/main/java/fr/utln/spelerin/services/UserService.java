@@ -79,6 +79,29 @@ public class UserService {
 		return userRepository.deleteById(id);
 	}
 
+	public UserDTO addOwnedGuildToUser(Long userId, Long guildId) {
+		User user = userRepository.findById(userId);
+	
+		if (user == null) throw new NoSuchElementException("User not found: " + userId);
+
+		Guild guild = guildRepository.findById(guildId);
+		if (guild == null) throw new NoSuchElementException("Guild not found: " + guildId);
+
+		user.addOwnedGuild(guild);
+		return userMapper.toDTO(user);
+	}
+
+	public UserDTO removeOwnedGuildFromUser(Long userId, Long guildId) {
+		User user = userRepository.findById(userId);
+		Guild guild = guildRepository.findById(guildId);
+
+		if (user == null) throw new NoSuchElementException("User not found: " + userId);
+		if (guild == null) throw new NoSuchElementException("Guild not found: " + guildId);
+
+		user.removeOwnedGuild(guild);
+		return userMapper.toDTO(user);
+	}
+
 	public UserDTO addGuildToUser(Long userId, Long guildId) {
 		User user = userRepository.findById(userId);
 	

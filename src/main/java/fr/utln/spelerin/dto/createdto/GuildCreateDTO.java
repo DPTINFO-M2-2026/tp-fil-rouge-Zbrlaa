@@ -12,5 +12,9 @@ public record GuildCreateDTO(
 	
 	@NotBlank(message = "Le nom de la guilde est obligatoire.")
 	@Size(min = 2, max = 100, message = "Le nom doit contenir entre {min} et {max} caractères.")
-	String name
+	String name,
+
+	@NotNull(message = "L'ID du propriétaire est obligatoire.")
+	@Min(value = 1L, message = "L'ID du propriétaire doit être positif (Snowflake).")
+	Long ownerId
 ){}

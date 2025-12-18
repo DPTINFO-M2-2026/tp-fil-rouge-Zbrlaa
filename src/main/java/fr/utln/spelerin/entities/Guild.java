@@ -25,6 +25,10 @@ public class Guild {
 	@ToString.Include
 	private String name;
 
+	@ManyToOne
+	@JoinColumn(name = "owner", nullable = false)
+	private User owner;
+
 	@Builder.Default
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(
@@ -103,6 +107,11 @@ public class Guild {
 		}
 	}
 
+
+	@ToString.Include(name = "ownerId")
+	public long getOwnerId() {
+		return owner != null ? owner.getId() : 0L;
+	}
 
 	@ToString.Include(name = "userIds")
 	public Set<Long> getUserIds() {

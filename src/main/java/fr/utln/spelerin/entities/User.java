@@ -34,6 +34,10 @@ public class User {
 	private Set<Guild> guilds = new HashSet<>();
 
 	@Builder.Default
+	@OneToMany(mappedBy = "owner", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private Set<Guild> ownedGuilds = new HashSet<>();
+
+	@Builder.Default
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(
 		name = "user_roles",
@@ -56,6 +60,20 @@ public class User {
 		}
 	}
 
+	public void addOwnedGuild(Guild guild) {
+		if (guild == null) return;
+		if (this.ownedGuilds.add(guild)) {
+			guild.setOwner(this);
+		}
+	}
+
+	public void removeOwnedGuild(Guild guild) {
+		if (guild == null) return;
+		if (this.ownedGuilds.remove(guild)) {
+			guild.setOwner(null);
+		}
+	}
+
 	public void addRole(Role role) {
 		if (role == null) return;
 		if (this.roles.add(role)) {
@@ -70,10 +88,19 @@ public class User {
 		}
 	}
 
+	
+
 
 	@ToString.Include(name = "guildIds")
 	public Set<Long> getGuildIds() {
 		return guilds.stream()
+				.map(Guild::getId)
+				.collect(Collectors.toUnmodifiableSet());
+	}
+
+	@ToString.Include(name = "ownedGuildIds")
+	public Set<Long> getOwnedGuildIds() {
+		return ownedGuilds.stream()
 				.map(Guild::getId)
 				.collect(Collectors.toUnmodifiableSet());
 	}

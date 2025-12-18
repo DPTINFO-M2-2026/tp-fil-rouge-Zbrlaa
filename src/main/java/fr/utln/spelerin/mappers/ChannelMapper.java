@@ -19,14 +19,12 @@ public interface ChannelMapper {
 	@Mapping(target = "id", source = "dto.id")
 	@Mapping(target = "name", source = "dto.name")
 	@Mapping(target = "type", source = "dto.type")
-	@Mapping(target = "guild", source = "guild")
 	@Mapping(target = "rolesWithAccess", ignore = true)
 	Channel toEntity(ChannelCreateDTO dto, Guild guild);
 
 	// ----------- Update entity from UpdateDTO + Guild -----------
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "name", source = "dto.name")
-	@Mapping(target = "type", source = "dto.type")
 	@Mapping(target = "guild", source = "guild")
 	@Mapping(target = "guildId", ignore = true)
 	@Mapping(target = "rolesWithAccess", ignore = true)

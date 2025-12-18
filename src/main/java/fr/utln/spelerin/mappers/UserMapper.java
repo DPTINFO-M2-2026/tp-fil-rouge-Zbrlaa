@@ -10,8 +10,6 @@ import org.mapstruct.*;
 public interface UserMapper {
 
 	// ----------- Entity -> DTO -----------
-	@Mapping(target = "guildIds", source = "guildIds")
-	@Mapping(target = "roleIds", source = "roleIds")
 	UserDTO toDTO(User user);
 
 	// ----------- CreateDTO -> Entity -----------
@@ -19,6 +17,7 @@ public interface UserMapper {
 	@Mapping(target = "username", source = "dto.username")
 	@Mapping(target = "displayName", source = "dto.displayName")
 	@Mapping(target = "guilds", ignore = true)
+	@Mapping(target = "ownedGuilds", ignore = true)
 	@Mapping(target = "roles", ignore = true)
 	User toEntity(UserCreateDTO dto);
 
@@ -28,8 +27,10 @@ public interface UserMapper {
 	@Mapping(target = "username", source = "dto.username")
 	@Mapping(target = "displayName", source = "dto.displayName")
 	@Mapping(target = "guilds", ignore = true)
+	@Mapping(target = "ownedGuilds", ignore = true)
 	@Mapping(target = "roles", ignore = true)
 	@Mapping(target = "guildIds", ignore = true)
+	@Mapping(target = "ownedGuildIds", ignore = true)
 	@Mapping(target = "roleIds", ignore = true)
 	void updateEntity(@MappingTarget User user, UserUpdateDTO dto);
 }

@@ -134,6 +134,55 @@ public class UserResource {
 	// --- Guild Relations ---
 
 	@PUT
+	@Path("/{userId}/ownedguild/{ownedGuildId}")
+	@Operation(summary = "Add a guild owned to a user", description = "Assigns an existing owned guild to a user.")
+	@APIResponses(value = {
+		@APIResponse(
+			responseCode = "200",
+			description = "Guild added to user. Returns the updated user.",
+			content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserDTO.class))
+		),
+		@APIResponse(responseCode = "404", description = "User or Guild not found")
+	})
+	public Response addOwnedGuild(
+		@Parameter(description = "Snowflake ID of the user", required = true, example = "101010101010101010")
+		@PathParam("userId") Long userId, 
+		@Parameter(description = "Snowflake ID of the guild owned", required = true, example = "202020202020202020")
+		@PathParam("ownedGuildId") Long ownedGuildId
+	) {
+		try {
+			return Response.ok(userService.addOwnedGuildToUser(userId, ownedGuildId)).build();
+		} catch (NoSuchElementException e) {
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+		}
+	}
+
+	@DELETE
+	@Path("/{userId}/ownedguild/{ownedGuildId}")
+	@Operation(summary = "Remove a guild owned from a user", description = "Removes an existing user from a guild (bidirectional).")
+	@APIResponses(value = {
+		@APIResponse(
+			responseCode = "200",
+			description = "Guild removed from user. Returns the updated user.",
+			content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserDTO.class))
+		),
+		@APIResponse(responseCode = "404", description = "User or Guild not found")
+	})
+	public Response removeOwnedGuild(
+		@Parameter(description = "Snowflake ID of the user", required = true, example = "101010101010101010")
+		@PathParam("userId") Long userId, 
+		@Parameter(description = "Snowflake ID of the guild to remove", required = true, example = "202020202020202020")
+		@PathParam("ownedGuildId") Long ownedGuildId
+	) {
+		try {
+			return Response.ok(userService.removeOwnedGuildFromUser(userId, ownedGuildId)).build();
+		} catch (NoSuchElementException e) {
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+		}
+	}
+
+
+	@PUT
 	@Path("/{userId}/guilds/{guildId}")
 	@Operation(summary = "Add user to guild", description = "Adds an existing user to a guild (bidirectional).")
 	@APIResponses(value = {
