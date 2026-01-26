@@ -73,6 +73,26 @@ public class UserResource {
 				.orElse(Response.status(Response.Status.NOT_FOUND).build());
 	}
 
+	@GET
+	@Path("/by-username/{username}")
+	@Operation(summary = "Get user by username", description = "Retrieves the detailed information for a specific user using their username.")
+	@APIResponses(value = {
+		@APIResponse(
+			responseCode = "200",
+			description = "User found",
+			content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserDTO.class))
+		),
+		@APIResponse(responseCode = "404", description = "User not found with this username")
+	})
+	public Response getByUsername(
+		@Parameter(description = "User username", required = true, example = "exampleUser")
+		@PathParam("username") String username
+	) {
+		return userService.getUserByUsername(username)
+				.map(dto -> Response.ok(dto).build())
+				.orElse(Response.status(Response.Status.NOT_FOUND).build());
+	}
+
 	@POST
 	@Operation(summary = "Create a new user", description = "Creates a new user. The ID must be supplied in the DTO.")
 	@APIResponse(

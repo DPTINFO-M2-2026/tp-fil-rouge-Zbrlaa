@@ -47,6 +47,11 @@ public class UserService {
 				.map(userMapper::toDTO);
 	}
 
+	public Optional<UserDTO> getUserByUsername(String username) {
+		return userRepository.findByUsernameOptional(username)
+				.map(userMapper::toDTO);
+	}
+
 	//Upsert
 	public UserDTO createUser(UserCreateDTO dto) {
 		// [MODIFICATION: Début de la logique Upsert]
