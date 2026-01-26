@@ -73,6 +73,35 @@ public class InvitationResource {
 	}
 
 	@POST
+	@Path("/generate/{guildId}")
+	@Operation(
+		summary = "Générer une invitation unique",
+		description = "Demande au Bot de créer une invitation permanente sur Discord et l'enregistre en base de données."
+	)
+	@APIResponse(
+		responseCode = "201",
+		description = "Invitation générée et enregistrée avec succès",
+		content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = InvitationDTO.class))
+	)
+	@APIResponse(
+		responseCode = "404",
+		description = "Guilde introuvable dans la base de données"
+	)
+	public Response generate(
+		@PathParam("guildId") Long guildId
+	) {
+		try {
+			InvitationDTO dto = invitationService.generateAndSaveInvitation(guildId);
+			return Response.status(Response.Status.CREATED).entity(dto).build();
+		} catch (NoSuchElementException e) {
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+						.entity("Erreur lors de la communication avec le Bot").build();
+		}
+	}
+
+	@POST
 	@Operation(summary = "Create a new invitation", description = "Creates an invitation linked to a specific role and guild.")
 	@APIResponses(value = {
 		@APIResponse(

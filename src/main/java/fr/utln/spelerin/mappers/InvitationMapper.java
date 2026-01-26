@@ -19,6 +19,7 @@ public interface InvitationMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "discordCode", source = "dto.discordCode")
 	@Mapping(target = "guild", source = "guild")
+	@Mapping(target = "roles", ignore = true) // To initialize roles empty
 	Invitation toEntity(InvitationCreateDTO dto, Guild guild);
 
 
@@ -27,5 +28,6 @@ public interface InvitationMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "discordCode", source = "dto.discordCode")
 	@Mapping(target = "guild", source = "guild")
+	@Mapping(target = "roles", ignore = true) // To initialize roles empty
 	void updateEntity(@MappingTarget Invitation invitation, InvitationUpdateDTO dto, Guild guild);
 }

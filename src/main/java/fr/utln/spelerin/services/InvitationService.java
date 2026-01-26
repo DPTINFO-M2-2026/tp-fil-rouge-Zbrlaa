@@ -1,5 +1,6 @@
 package fr.utln.spelerin.services;
 
+import fr.utln.spelerin.clients.BotClient;
 import fr.utln.spelerin.dto.InvitationDTO;
 import fr.utln.spelerin.dto.createdto.InvitationCreateDTO;
 import fr.utln.spelerin.dto.updatedto.InvitationUpdateDTO;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
 @ApplicationScoped
 @Transactional
 public class InvitationService {
@@ -26,15 +29,33 @@ public class InvitationService {
 	private final InvitationRepository invitationRepository;
 	private final RoleRepository roleRepository;
 	private final GuildRepository guildRepository;
+	private final BotClient botClient;
 
 	@Inject
 	public InvitationService(InvitationMapper invitationMapper, InvitationRepository invitationRepository, 
-							 RoleRepository roleRepository, GuildRepository guildRepository) {
+				RoleRepository roleRepository, GuildRepository guildRepository, @RestClient BotClient botClient) {
 		this.invitationMapper = invitationMapper;
 		this.invitationRepository = invitationRepository;
 		this.roleRepository = roleRepository;
 		this.guildRepository = guildRepository;
+		this.botClient = botClient;
 	}
+
+	@Transactional
+    public InvitationDTO generateAndSaveInvitation(long guildId) {
+        String discordCode = botClient.getInviteCode(guildId);
+
+        Guild guild = guildRepository.findById(guildId);
+        if (guild == null) {
+            throw new NoSuchElementException("Guilde introuvable en base");
+        }
+
+        InvitationCreateDTO createDto = new InvitationCreateDTO(discordCode, guildId);
+        Invitation entity = invitationMapper.toEntity(createDto, guild);
+        invitationRepository.persist(entity);
+
+        return invitationMapper.toDTO(entity);
+    }
 
 	public List<InvitationDTO> getAllInvitations() {
 		return invitationRepository.listAll().stream().map(invitationMapper::toDTO).toList();
