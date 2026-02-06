@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @ApplicationScoped
-@Transactional
 public class ChannelService {
 
 	private final ChannelMapper channelMapper;
@@ -49,6 +48,7 @@ public class ChannelService {
 	}
 
 	//Upsert
+	@Transactional
 	public ChannelDTO createChannel(ChannelCreateDTO dto) {
 		Channel existing = channelRepository.findById(dto.id());
 
@@ -71,6 +71,7 @@ public class ChannelService {
 		return channelMapper.toDTO(channel);
 	}
 
+	@Transactional
 	public ChannelDTO updateChannel(Long id, ChannelUpdateDTO dto) {
 		Channel channel = channelRepository.findById(id);
 		if (channel == null) {
@@ -86,10 +87,12 @@ public class ChannelService {
 		return channelMapper.toDTO(channel);
 	}
 
+	@Transactional
 	public boolean deleteChannel(Long id) {
 		return channelRepository.deleteById(id);
 	}
 
+	@Transactional
 	public ChannelDTO addRoleToChannel(Long channelId, Long roleId) {
 		Channel channel = channelRepository.findById(channelId);
 		Role role = roleRepository.findById(roleId);
@@ -105,6 +108,7 @@ public class ChannelService {
 		return channelMapper.toDTO(channel);
 	}
 
+	@Transactional
 	public ChannelDTO removeRoleFromChannel(Long channelId, Long roleId) {
 		Channel channel = channelRepository.findById(channelId);
 		Role role = roleRepository.findById(roleId);

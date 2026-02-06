@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @ApplicationScoped
-@Transactional
 public class GuildService {
 
 	private final GuildMapper guildMapper;
@@ -49,6 +48,7 @@ public class GuildService {
 	}
 
 	//Upsert
+	@Transactional
 	public GuildDTO createGuild(GuildCreateDTO dto) {
 		Guild existing = guildRepository.findById(dto.id());
 
@@ -67,6 +67,7 @@ public class GuildService {
 		return guildMapper.toDTO(guild);
 	}
 
+	@Transactional
 	public GuildDTO updateGuild(Long id, GuildUpdateDTO dto) {
 		Guild guild = guildRepository.findById(id);
 		if (guild == null) throw new NoSuchElementException("Guild not found: " + id);
@@ -80,10 +81,12 @@ public class GuildService {
 		return guildMapper.toDTO(guild);
 	}
 
+	@Transactional
 	public boolean deleteGuild(Long id) {
 		return guildRepository.deleteById(id);
 	}
 
+	@Transactional
 	public GuildDTO addUserToGuild(Long guildId, Long userId) {
 		Guild guild = guildRepository.findById(guildId);
 		User user = userRepository.findById(userId);
@@ -95,6 +98,7 @@ public class GuildService {
 		return guildMapper.toDTO(guild);
 	}
 
+	@Transactional
 	public GuildDTO removeUserFromGuild(Long guildId, Long userId) {
 		Guild guild = guildRepository.findById(guildId);
 		User user = userRepository.findById(userId);
@@ -106,6 +110,7 @@ public class GuildService {
 		return guildMapper.toDTO(guild);
 	}
 
+	@Transactional
 	public GuildDTO addRoleToGuild(Long guildId, Long roleId) {
 		Guild guild = guildRepository.findById(guildId);
 		Role role = roleRepository.findById(roleId);
@@ -117,6 +122,7 @@ public class GuildService {
 		return guildMapper.toDTO(guild);
 	}
 
+	@Transactional
 	public GuildDTO removeRoleFromGuild(Long guildId, Long roleId) {
 		Guild guild = guildRepository.findById(guildId);
 		Role role = roleRepository.findById(roleId);
@@ -128,6 +134,7 @@ public class GuildService {
 		return guildMapper.toDTO(guild);
 	}
 
+	@Transactional
 	public GuildDTO addChannelToGuild(Long guildId, Long channelId) {
 		Guild guild = guildRepository.findById(guildId);
 		Channel channel = channelRepository.findById(channelId);
@@ -139,6 +146,7 @@ public class GuildService {
 		return guildMapper.toDTO(guild);
 	}
 
+	@Transactional
 	public GuildDTO removeChannelFromGuild(Long guildId, Long channelId) {
 		Guild guild = guildRepository.findById(guildId);
 		Channel channel = channelRepository.findById(channelId);

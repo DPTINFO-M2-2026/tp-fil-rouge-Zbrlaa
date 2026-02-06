@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @ApplicationScoped
-@Transactional
 public class RoleService {
 
 	private final RoleMapper roleMapper;
@@ -49,6 +48,7 @@ public class RoleService {
 	}
 
 	//Upsert
+	@Transactional
 	public RoleDTO createRole(RoleCreateDTO dto) {
 		Role existing = roleRepository.findById(dto.id());
 
@@ -76,6 +76,7 @@ public class RoleService {
 		return roleMapper.toDTO(role);
 	}
 
+	@Transactional
 	public RoleDTO updateRole(Long id, RoleUpdateDTO dto) {
 		Role role = roleRepository.findById(id);
 		if (role == null) throw new NoSuchElementException("Role not found: " + id);
@@ -87,10 +88,12 @@ public class RoleService {
 		return roleMapper.toDTO(role);
 	}
 
+	@Transactional
 	public boolean deleteRole(Long id) {
 		return roleRepository.deleteById(id);
 	}
 
+	@Transactional
 	public RoleDTO addUserToRole(Long roleId, Long userId) {
 		Role role = roleRepository.findById(roleId);
 		User user = userRepository.findById(userId);
@@ -102,6 +105,7 @@ public class RoleService {
 		return roleMapper.toDTO(role);
 	}
 
+	@Transactional
 	public RoleDTO removeUserFromRole(Long roleId, Long userId) {
 		Role role = roleRepository.findById(roleId);
 		User user = userRepository.findById(userId);
@@ -113,6 +117,7 @@ public class RoleService {
 		return roleMapper.toDTO(role);
 	}
 
+	@Transactional
 	public RoleDTO addChannelToRole(Long roleId, Long channelId) {
 		Role role = roleRepository.findById(roleId);
 		Channel channel = channelRepository.findById(channelId);
@@ -124,6 +129,7 @@ public class RoleService {
 		return roleMapper.toDTO(role);
 	}
 
+	@Transactional
 	public RoleDTO removeChannelFromRole(Long roleId, Long channelId) {
 		Role role = roleRepository.findById(roleId);
 		Channel channel = channelRepository.findById(channelId);

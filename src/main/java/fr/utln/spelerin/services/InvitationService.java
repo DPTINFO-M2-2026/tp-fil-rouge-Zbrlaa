@@ -22,7 +22,6 @@ import java.util.Optional;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @ApplicationScoped
-@Transactional
 public class InvitationService {
 
 	private final InvitationMapper invitationMapper;
@@ -65,6 +64,7 @@ public class InvitationService {
 		return invitationRepository.findByIdOptional(id).map(invitationMapper::toDTO);
 	}
 
+	@Transactional
 	public InvitationDTO createInvitation(InvitationCreateDTO dto) {
 		Guild guild = guildRepository.findById(dto.guildId());
 		if (guild == null) throw new NoSuchElementException("Guild not found: " + dto.guildId());
@@ -74,6 +74,7 @@ public class InvitationService {
 		return invitationMapper.toDTO(invitation);
 	}
 
+	@Transactional
 	public InvitationDTO updateInvitation(Long id, InvitationUpdateDTO dto) {
 		Invitation invitation = invitationRepository.findById(id);
 		if (invitation == null) throw new NoSuchElementException("Invitation not found: " + id);
@@ -85,10 +86,12 @@ public class InvitationService {
 		return invitationMapper.toDTO(invitation);
 	}
 
+	@Transactional
 	public boolean deleteInvitation(Long id) {
 		return invitationRepository.deleteById(id);
 	}
 
+	@Transactional
 	public InvitationDTO addRoleToInvitation(Long invitationId, Long roleId) {
 		Invitation invitation = invitationRepository.findById(invitationId);
 		if (invitation == null) throw new NoSuchElementException("Invitation not found: " + invitationId);
@@ -100,6 +103,7 @@ public class InvitationService {
 		return invitationMapper.toDTO(invitation);
 	}
 
+	@Transactional
 	public InvitationDTO removeRoleFromInvitation(Long invitationId, Long roleId) {
 		Invitation invitation = invitationRepository.findById(invitationId);
 		if (invitation == null) throw new NoSuchElementException("Invitation not found: " + invitationId);

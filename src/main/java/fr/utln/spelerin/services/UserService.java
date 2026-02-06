@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @ApplicationScoped
-@Transactional
 public class UserService {
 
 	private final UserMapper userMapper;
@@ -53,6 +52,7 @@ public class UserService {
 	}
 
 	//Upsert
+	@Transactional
 	public UserDTO createUser(UserCreateDTO dto) {
 		// [MODIFICATION: Début de la logique Upsert]
 		User existing = userRepository.findById(dto.id());
@@ -71,6 +71,7 @@ public class UserService {
 		return userMapper.toDTO(user);
 	}
 
+	@Transactional
 	public UserDTO updateUser(Long id, UserUpdateDTO dto) {
 		User user = userRepository.findById(id);
 		if (user == null) {
@@ -80,10 +81,12 @@ public class UserService {
 		return userMapper.toDTO(user);
 	}
 
+	@Transactional
 	public boolean deleteUser(Long id) {
 		return userRepository.deleteById(id);
 	}
 
+	@Transactional
 	public UserDTO addOwnedGuildToUser(Long userId, Long guildId) {
 		User user = userRepository.findById(userId);
 	
@@ -96,6 +99,7 @@ public class UserService {
 		return userMapper.toDTO(user);
 	}
 
+	@Transactional
 	public UserDTO removeOwnedGuildFromUser(Long userId, Long guildId) {
 		User user = userRepository.findById(userId);
 		Guild guild = guildRepository.findById(guildId);
@@ -107,6 +111,7 @@ public class UserService {
 		return userMapper.toDTO(user);
 	}
 
+	@Transactional
 	public UserDTO addGuildToUser(Long userId, Long guildId) {
 		User user = userRepository.findById(userId);
 	
@@ -119,6 +124,7 @@ public class UserService {
 		return userMapper.toDTO(user);
 	}
 
+	@Transactional
 	public UserDTO removeGuildFromUser(Long userId, Long guildId) {
 		User user = userRepository.findById(userId);
 		Guild guild = guildRepository.findById(guildId);
@@ -130,6 +136,7 @@ public class UserService {
 		return userMapper.toDTO(user);
 	}
 
+	@Transactional
 	public UserDTO addRoleToUser(Long userId, Long roleId) {
 		User user = userRepository.findById(userId);
 		Role role = roleRepository.findById(roleId);
@@ -141,6 +148,7 @@ public class UserService {
 		return userMapper.toDTO(user);
 	}
 
+	@Transactional
 	public UserDTO removeRoleFromUser(Long userId, Long roleId) {
 		User user = userRepository.findById(userId);
 		Role role = roleRepository.findById(roleId);
