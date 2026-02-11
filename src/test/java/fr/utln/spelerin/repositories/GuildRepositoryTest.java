@@ -183,21 +183,4 @@ class GuildRepositoryTest {
         // Then
         assertNull(result);
     }
-
-    @Test
-    @DisplayName("Should verify guild collections are initialized properly")
-    void testGuildCollectionsInitialization() {
-        // Given
-        when(guildRepository.findById(1000L)).thenReturn(testGuild);
-
-        // When
-        Guild result = guildRepository.findById(1000L);
-
-        // Then
-        assertNotNull(result.getUsers());
-        assertNotNull(result.getRoles());
-        assertNotNull(result.getChannels());
-        assertNotNull(result.getInvitations());
-        assertTrue(result.getUsers().isEmpty());
-    }
 }

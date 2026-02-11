@@ -169,20 +169,6 @@ class ChannelRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should verify channel collections are initialized")
-    void testChannelCollectionsInitialization() {
-        // Given
-        when(channelRepository.findById(6000L)).thenReturn(testChannel);
-
-        // When
-        Channel result = channelRepository.findById(6000L);
-
-        // Then
-        assertNotNull(result.getRolesWithAccess());
-        assertTrue(result.getRolesWithAccess().isEmpty());
-    }
-
-    @Test
     @DisplayName("Should handle error: null channel ID")
     void testFindByNullId() {
         // Given

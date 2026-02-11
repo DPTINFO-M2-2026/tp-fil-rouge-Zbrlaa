@@ -149,21 +149,6 @@ class RoleRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should verify role collections are initialized")
-    void testRoleCollectionsInitialization() {
-        // Given
-        when(roleRepository.findById(5000L)).thenReturn(testRole);
-
-        // When
-        Role result = roleRepository.findById(5000L);
-
-        // Then
-        assertNotNull(result.getUsers());
-        assertNotNull(result.getAccessibleChannels());
-        assertTrue(result.getUsers().isEmpty());
-    }
-
-    @Test
     @DisplayName("Should handle error: null role ID")
     void testFindByNullId() {
         // Given

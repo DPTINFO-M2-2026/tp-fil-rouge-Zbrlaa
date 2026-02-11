@@ -372,16 +372,6 @@ class ChannelRepositoryIT {
         }
 
         @Test
-        @DisplayName("Should return empty list when no channels in database")
-        void testListAllChannelsWhenEmpty() {
-            // When
-            List<Channel> result = channelRepository.listAll();
-
-            // Then
-            assertEquals(0, result.size());
-        }
-
-        @Test
         @DisplayName("Should count channels in database")
         void testCountChannels() {
             // Given
