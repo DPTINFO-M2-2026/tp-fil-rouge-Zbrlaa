@@ -1,5 +1,6 @@
 package fr.utln.spelerin.dto.createdto;
 
+import fr.utln.spelerin.validation.ValidDiscordUsername;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ public record UserCreateDTO(
 	
 	@NotBlank(message = "Le nom d'utilisateur est obligatoire.")
 	@Size(min = 2, max = 32, message = "Le nom d'utilisateur doit contenir entre {min} et {max} caractères.")
+	@ValidDiscordUsername
 	String username,
 	
 	@NotBlank(message = "Le nom affiché est obligatoire.")
